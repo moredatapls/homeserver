@@ -15,6 +15,6 @@ spec:
           service:
             name: home-assistant
             port:
-              number: 5000
+              number: 8123
         path: /
         pathType: Prefix

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: home-assistant
+  namespace: home-assistant
+spec:
+  capacity:
+    storage: 512Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/data/home-assistant
+    type: DirectoryOrCreate
+  claimRef:
+    name: home-assistant
+    namespace: home-assistant
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+              - alderaan

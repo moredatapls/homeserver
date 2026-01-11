@@ -11,6 +11,8 @@ spec:
     matchLabels:
       app: home-assistant
   template:
+    strategy:
+      type: Recreate
     metadata:
       labels:
         app: home-assistant

@@ -28,8 +28,6 @@ spec:
             - mountPath: /etc/localtime
               name: home-assistant-time
               readOnly: true
-      nodeSelector:
-        name: alderaan
       hostNetwork: true
       volumes:
         - name: home-assistant-config

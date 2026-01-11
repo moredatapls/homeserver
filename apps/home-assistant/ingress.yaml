@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: home-assistant
   namespace: home-assistant
+  labels:
+    app: home-assistant
 spec:
   ingressClassName: nginx
   rules:

@@ -47,5 +47,6 @@ spec:
       admissionWebhooks:
         certManager:
           enabled: true
+      hostNetwork: true
       service:
         type: "NodePort"

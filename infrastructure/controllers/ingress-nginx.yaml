@@ -48,5 +48,6 @@ spec:
         certManager:
           enabled: true
       hostNetwork: true
+      kind: DaemonSet
       service:
         type: "NodePort"

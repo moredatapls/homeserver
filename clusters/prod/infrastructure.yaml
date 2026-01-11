@@ -52,6 +52,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./infrastructure/storageclasses
+  path: ./infrastructure/storage
   prune: true
   wait: true

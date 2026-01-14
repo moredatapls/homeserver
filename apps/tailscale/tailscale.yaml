@@ -10,11 +10,11 @@ spec:
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
-  name: tailscale
+  name: tailscale-operator
   namespace: tailscale
 spec:
   interval: 5m0s
-  chart: tailscale
+  chart: tailscale-operator
   reconcileStrategy: ChartVersion
   sourceRef:
     kind: HelmRepository
@@ -39,5 +39,5 @@ spec:
       retryInterval: 3m
   chartRef:
     kind: HelmChart
-    name: tailscale
+    name: tailscale-operator
   values: {}

@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: server
+  namespace: pihole
+spec:
+  replicas: 1
+  serviceName: pihole
+  selector:
+    matchLabels:
+      app: pihole
+  template:
+    metadata:
+      labels:
+        app: pihole
+    spec:
+      containers:
+        - name: server
+          image: pihole/pihole:latest
+          env:
+            - name: TZ
+              value: "Europe/Berlin"
+            - name: DNSMASQ_USER
+              value: root
+            - name: PIHOLE_UID
+              value: "0"
+            - name: WEBPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pihole-admin
+                  key: password
+          ports:
+            - name: dns-tcp
+              containerPort: 53
+              protocol: TCP
+            - name: dns-udp
+              containerPort: 53
+              protocol: UDP
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /admin
+              port: 80
+              scheme: HTTP
+            failureThreshold: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+          volumeMounts:
+            - mountPath: /etc/pihole
+              name: data
+            - mountPath: /etc/dnsmasq.d
+              name: dnsmasq
+      volumes:
+        - name: data
+          emptyDir: {}
+        - name: dnsmasq
+          emptyDir: {}

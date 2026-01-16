@@ -1,5 +1,31 @@
 # Home server
 
-TODO
+## Setup
+
+* Install FluxCD using [GitHub bootstrapping](https://fluxcd.io/flux/installation/bootstrap/github/):
+  ```sh
+  flux bootstrap github \
+    --owner=moredatapls \
+    --repository=homeserver \
+    --branch=main \
+    --personal \
+    --path=clusters/prod
+  ```
+* Complete the prerequisites of the [Tailscale K8s installation](https://tailscale.com/kb/1236/kubernetes-operator#prerequisites)
+* Create the secret in the cluster for Tailscale with the client ID and the client secret of the OAuth app:
+  ```yaml
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: operator-oauth
+    namespace: tailscale
+  type: Opaque
+  stringData:
+    client_id: ...
+    client_secret: ...
+  ```
+
+## TODOs
 
 * Reduce intervals: `1h` from `1m`
+* Complete the setup documentation

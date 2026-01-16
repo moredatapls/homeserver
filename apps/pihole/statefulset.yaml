@@ -52,11 +52,12 @@ spec:
             timeoutSeconds: 5
           volumeMounts:
             - mountPath: /etc/pihole
-              name: data
+              name: pihole-etc
             - mountPath: /etc/dnsmasq.d
               name: dnsmasq
       volumes:
-        - name: data
-          emptyDir: {}
+        - name: pihole-etc
+          persistentVolumeClaim:
+            claimName: pihole-etc
         - name: dnsmasq
           emptyDir: {}

@@ -1,0 +1,10 @@
+apiVersion: tailscale.com/v1alpha1
+kind: Connector
+metadata:
+  name: berlin
+spec:
+  replicas: 1
+  hostnamePrefix: berlin
+  subnetRouter:
+    advertiseRoutes:
+      - "192.168.178.0/24"

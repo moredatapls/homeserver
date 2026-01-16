@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: home-assistant.ber.bruegner.com
+  - host: homeassistant.berlin.bruegner.com
     http:
       paths:
       - backend:

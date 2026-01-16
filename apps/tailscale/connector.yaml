@@ -7,4 +7,7 @@ spec:
   hostnamePrefix: berlin
   subnetRouter:
     advertiseRoutes:
+      # home network
       - "192.168.178.0/24"
+      # internet
+      - "0.0.0.0/0"

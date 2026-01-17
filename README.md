@@ -25,6 +25,12 @@
     client_secret: ...
   ```
 
+## Resources
+
+The setup is based on various guides.
+
+* [Pi-Hole auf Kubernetes](https://www.trion.de/news/2025/01/26/pi-hole-kubernetes.html)
+
 ## TODOs
 
 * Reduce intervals: `1h` from `1m`

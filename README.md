@@ -29,6 +29,7 @@
 
 The setup is based on various guides.
 
+* [Home Assistant in Kubernetes the simple way](https://blog.quadmeup.com/2025/04/07/how-to-run-home-assistant-in-kubernetes/)
 * [Pi-Hole auf Kubernetes](https://www.trion.de/news/2025/01/26/pi-hole-kubernetes.html)
 
 ## TODOs

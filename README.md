@@ -24,6 +24,17 @@
     client_id: ...
     client_secret: ...
   ```
+* Create a secret in the cluster for Pi-Hole:
+  ```yaml
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: pi-hole-admin
+    namespace: pi-hole
+  type: Opaque
+  stringData:
+    password: ...
+  ```
 
 ## Resources
 

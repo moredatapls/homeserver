@@ -27,7 +27,7 @@ spec:
             - name: WEBPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: pihole-admin
+                  name: pi-hole-admin
                   key: password
           ports:
             - name: dns-tcp

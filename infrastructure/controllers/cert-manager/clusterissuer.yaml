@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@bruegner.com
+    privateKeySecretRef:
+      name: letsencrypt
+    solvers:
+    - dns01:
+        webhook:
+          solverName: ionos-cloud
+          groupName: acme.ionos.com
+          config:
+            secretRef: cert-manager-webhook-ionos-cloud
+            authTokenSecretKey: auth-token

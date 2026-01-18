@@ -4,6 +4,9 @@ metadata:
   name: apps-home-assistant
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: infra-controllers
+    - name: infra-controllers-cert-manager
   interval: 1h
   retryInterval: 2m
   timeout: 5m
@@ -24,6 +27,9 @@ metadata:
   name: apps-tailscale
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: infra-controllers
+    - name: infra-controllers-cert-manager
   interval: 1m
   retryInterval: 2m
   timeout: 5m
@@ -44,6 +50,9 @@ metadata:
   name: apps-pi-hole
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: infra-controllers
+    - name: infra-controllers-cert-manager
   interval: 1m
   retryInterval: 2m
   timeout: 5m
@@ -64,6 +73,9 @@ metadata:
   name: apps-paperless-ngx
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: infra-controllers
+    - name: infra-controllers-cert-manager
   interval: 1m
   retryInterval: 2m
   timeout: 5m

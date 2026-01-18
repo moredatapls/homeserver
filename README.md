@@ -1,6 +1,6 @@
 # Home server
 
-<img style="float: right; width: 100px;" src="https://github.com/moredatapls/homeserver/blob/main/img/logo.jpeg">
+<img style="width: 120px;" src="https://github.com/moredatapls/homeserver/blob/main/img/logo.jpeg">
 
 ## Repo
 

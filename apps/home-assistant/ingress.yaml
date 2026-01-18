@@ -6,7 +6,7 @@ metadata:
   labels:
     app: home-assistant
   annotations:
-    cert-manager.io/issuer: "letsencrypt"
+    cert-manager.io/cluster-issuer: "letsencrypt"
 spec:
   ingressClassName: nginx
   rules:

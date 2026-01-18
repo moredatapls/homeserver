@@ -12,8 +12,42 @@ metadata:
 spec:
   interval: 24h
   url: https://kubernetes-sigs.github.io/external-dns/
-#---
-# TODO add ionos-credentials secret in external-dns namespace
+---
+apiVersion: v1
+kind: Secret
+metadata:
+    name: ionos-credentials
+    namespace: external-dns
+type: Opaque
+data:
+    api-key: ENC[AES256_GCM,data:dr5mexzSCnII8J2Eg5NFimL9+TvEikrB9dxcsampUJx1vcRrSw7whkbfA7ALbetWQpUOFkKBdHpaWzMdfzes3903ZXK2dcCjbmx2SdJrkdrXTQu/nW6LNiPUCjZdu31d0HEviAei/TFtzpwpfLyTlb5hBRk=,iv:GlaH0mehwzg7n85o/y4uYyrnYF4yh3fLr/EkUXofqz0=,tag:tn/9M5eiUbsb/qFfrJKsSA==,type:str]
+sops:
+    lastmodified: "2026-01-18T17:04:10Z"
+    mac: ENC[AES256_GCM,data:UXjkg85UdY1ZPZ9ELS5XU+EBozKHvJZNf/FUnGLCHG14a7tfS1YDubpFkV8otRYD+yskuszO2Qkb0SYDOh6XdBkPSN1Ha+v90Rn6/PQRDDxqzlacvP73z4YlguHNVN1RqTwWRD9qt8V8mYqqaRE9xqHSs41alMi+vXI2PPwJZjk=,iv:9FRFEr+RePIOFsqlAgT/0BoBcZ1KhHxc/aevWDq0W4s=,tag:CX9sQe17fGKGw/kcQylqNQ==,type:str]
+    pgp:
+        - created_at: "2026-01-18T17:04:10Z"
+          enc: |-
+            -----BEGIN PGP MESSAGE-----
+
+            hQIMA4KQPv9+DbRsAQ/+KWdN0uXA3dopGE3Nck1a6WMNIGABjKiCorw18bBJ9ri2
+            hl84A0NczqjymvwMRwa/jEBtwl9DG/8o3+QDQw+26yseGNkoxkPMKFah2Q+NtqQu
+            KYHlL0ZywVx9Fwgo/Uu0jNmBL0CTk2gNbGxR3btccmtLW4wOD02l0Mp4IMO7VPpd
+            rC90Aij+isCL9rmKZXme0Hy9/tM+JRZ2H/zSFmHj99uXHn5eJqdpq3aMJcriSUYD
+            K4uFlcl32haz0+LJWqfgQz3XlltZugnUOIUqjB3ocjQzHfR6P2wAw8clWa5zs3AV
+            xp3DVuEaqx/YAsvLJsFwYXCzjEJw7trPl1rs+43S8hlQ3xndJj7+P9SCeS83KYPj
+            HpzncJdq+ReTmhtI+qzQyrTycc6skL7URA8jL/5nCyI7KloZSycj+qItOGEDuBUh
+            Q1l9qAJR3kyLxJOL1ZzwYzqQzxk4s3R9FyGSFJESqfHbEJTkbFndWTkB9daLAupa
+            6uInPfB9I5shyjDZjfFiajLMcgnNps6pBF3C+ypAcNj9p4Uk7UKu8xk3uzAYYTbU
+            SyqxzSzFNaQ8p4QcwUi2rk7FlguIpnyW73ux/G/DggZUgkka1LFABXo9htpDYhS9
+            RDKdjbcku0pkO3NDezL3y2YRNvJLZzusTVJhj65hz/8A4XDPK4CPJjLBKBb7+kvU
+            ZgEJAhBBqFhnEyyhrwq+EO5RlFPGEtUWAb/+6ijq06wSYlRdh8FwQ3cToeFDDcoN
+            /bUgRAtVaiskuySS0TUYFEsuOJI8zrBQjHpxutFblSm2Ioa5yJubtYXGtTFCbQsi
+            j2PnIJUEdA==
+            =wEY9
+            -----END PGP MESSAGE-----
+          fp: CA5041D30E6B1755A06AD223242A7AC1A18F40E8
+    encrypted_regex: ^(data|stringData)$
+    version: 3.11.0
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease

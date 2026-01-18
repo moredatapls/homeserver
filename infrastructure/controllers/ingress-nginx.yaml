@@ -49,6 +49,9 @@ spec:
       kind: DaemonSet
       service:
         type: "NodePort"
+        externalIPs:
+          # IP of the node where Kubernetes is running
+          - "192.168.178.104"
       
     # expose pi-hole as a DNS server on port 53
     # tcp:

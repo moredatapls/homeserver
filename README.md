@@ -36,6 +36,42 @@
     password: ...
   ```
 
+## SOPS
+
+1. Follow [this guide](https://fluxcd.io/flux/guides/mozilla-sops/)
+  1. Use the following to generate the key:
+  ```sh
+  export KEY_NAME="prod.berlin.bruegner.com"
+  export KEY_COMMENT="flux secrets"
+
+  gpg --batch --full-generate-key <<EOF
+  %no-protection
+  Key-Type: 1
+  Key-Length: 4096
+  Subkey-Type: 1
+  Subkey-Length: 4096
+  Expire-Date: 0
+  Name-Comment: ${KEY_COMMENT}
+  Name-Real: ${KEY_NAME}
+  EOF
+  ```
+  2. Use the following enable secrets decryption:
+  ```sh
+  flux create kustomization decryt-secrets \
+  --source=flux-system \
+  --path=./clusters/prod \
+  --prune=true \
+  --interval=10m \
+  --decryption-provider=sops \
+  --decryption-secret=sops-gpg
+  ```
+
+New secrets can be encrypted using the public key in the clusters directory.
+
+## Notes
+
+* I had to add the hostnames of my ingresses to the DNS rebind protection exclusion list in my FritzBox. By default, FritzBoxes block DNS requests that point to its own network
+
 ## Resources
 
 The setup is based on various guides.

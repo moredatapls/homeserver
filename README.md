@@ -9,7 +9,7 @@
     --repository=homeserver \
     --branch=main \
     --personal \
-    --path=clusters/prod
+    --path=clusters/berlin
   ```
 * Install the SOPS secret (from the password safe): `kubectl apply -f sops-gpg.yaml`
 * Complete the prerequisites of the [Tailscale K8s installation](https://tailscale.com/kb/1236/kubernetes-operator#prerequisites)

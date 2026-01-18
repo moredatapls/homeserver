@@ -20,9 +20,9 @@ spec:
         - containerPort: 6379
           name: redis
         volumeMounts:
-        - name: redis-data
+        - name: data
           mountPath: /data
       volumes:
-      - name: redis-data
+      - name: data
         persistentVolumeClaim:
-          claimName: redis-data
+          claimName: paperless-ngx-redis-data

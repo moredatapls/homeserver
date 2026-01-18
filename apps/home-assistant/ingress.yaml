@@ -5,16 +5,22 @@ metadata:
   namespace: home-assistant
   labels:
     app: home-assistant
+  annotations:
+    cert-manager.io/issuer: "letsencrypt"
 spec:
   ingressClassName: nginx
   rules:
-  - host: homeassistant.berlin.bruegner.com
-    http:
-      paths:
-      - backend:
-          service:
-            name: home-assistant
-            port:
-              number: 8123
-        path: /
-        pathType: Prefix
+    - host: homeassistant.berlin.bruegner.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: home-assistant
+                port:
+                  number: 8123
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - homeassistant.berlin.bruegner.com
+      secretName: home-assistant-tls

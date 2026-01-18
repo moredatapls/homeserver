@@ -1,5 +1,7 @@
 # Home server
 
+<img style="float: right;" src="https://github.com/moredatapls/homeserver/blob/main/img/logo.jpeg">
+
 ## Repo
 
 The repo contains the following directories:

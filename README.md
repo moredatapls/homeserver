@@ -11,62 +11,61 @@
     --personal \
     --path=clusters/prod
   ```
+* Install the SOPS secret (from the password safe): `kubectl apply -f sops-gpg.yaml`
 * Complete the prerequisites of the [Tailscale K8s installation](https://tailscale.com/kb/1236/kubernetes-operator#prerequisites)
-* Create the secret in the cluster for Tailscale with the client ID and the client secret of the OAuth app:
-  ```yaml
-  apiVersion: v1
-  kind: Secret
-  metadata:
-    name: operator-oauth
-    namespace: tailscale
-  type: Opaque
-  stringData:
-    client_id: ...
-    client_secret: ...
-  ```
-* Create a secret in the cluster for Pi-Hole:
-  ```yaml
-  apiVersion: v1
-  kind: Secret
-  metadata:
-    name: pi-hole-admin
-    namespace: pi-hole
-  type: Opaque
-  stringData:
-    password: ...
-  ```
 
 ## SOPS
 
-1. Follow [this guide](https://fluxcd.io/flux/guides/mozilla-sops/)
-  1. Use the following to generate the key:
-  ```sh
-  export KEY_NAME="prod.berlin.bruegner.com"
-  export KEY_COMMENT="flux secrets"
+Follow [this guide](https://fluxcd.io/flux/guides/mozilla-sops/) to setup SOPS locally.
 
-  gpg --batch --full-generate-key <<EOF
-  %no-protection
-  Key-Type: 1
-  Key-Length: 4096
-  Subkey-Type: 1
-  Subkey-Length: 4096
-  Expire-Date: 0
-  Name-Comment: ${KEY_COMMENT}
-  Name-Real: ${KEY_NAME}
-  EOF
-  ```
-  2. Use the following enable secrets decryption:
-  ```sh
-  flux create kustomization decryt-secrets \
-  --source=flux-system \
-  --path=./clusters/prod \
-  --prune=true \
-  --interval=10m \
-  --decryption-provider=sops \
-  --decryption-secret=sops-gpg
-  ```
+The following was used to generate the key:
+```sh
+export KEY_NAME="prod.berlin.bruegner.com"
+export KEY_COMMENT="flux secrets"
 
-New secrets can be encrypted using the public key in the clusters directory.
+gpg --batch --full-generate-key <<EOF
+%no-protection
+Key-Type: 1
+Key-Length: 4096
+Subkey-Type: 1
+Subkey-Length: 4096
+Expire-Date: 0
+Name-Comment: ${KEY_COMMENT}
+Name-Real: ${KEY_NAME}
+EOF
+```
+
+When reinstalling the cluster, the SOPS secret can be recovered from the password safe and installed: `kubectl apply -f sops-gpg.yaml`.
+
+New secrets can be encrypted using the public key in the clusters directory:
+
+```sh
+sops encrypt --in-place path/to/secret.yaml
+```
+
+The Kustomization that installs the secrets has to reference the SOPS decryption provider:
+
+```yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: my-app
+  namespace: flux-system
+spec:
+  interval: 1m
+  retryInterval: 2m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/my-app
+  prune: true
+  wait: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-gpg
+```
 
 ## Notes
 

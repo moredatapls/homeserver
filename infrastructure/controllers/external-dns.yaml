@@ -1,0 +1,76 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: external-dns
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: external-dns
+  namespace: external-dns
+spec:
+  interval: 24h
+  url: https://kubernetes-sigs.github.io/external-dns/
+#---
+# TODO add ionos-credentials secret in external-dns namespace
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: external-dns
+  namespace: external-dns
+spec:
+  interval: 12h
+  install:
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 2m
+  upgrade:
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 3m
+  chartRef:
+    kind: OCIRepository
+    name: external-dns
+  values:
+    image:
+      tag: v0.20.0
+
+    # -- ExternalDNS Log level.
+    logLevel: debug # reduce in production
+
+    # -- if true, ExternalDNS will run in a namespaced scope (Role and Rolebinding will be namespaced too).
+    namespaced: false
+
+    # -- Kubernetes resources to monitor for DNS entries.
+    sources:
+      - ingress
+      - service
+      - crd
+
+    provider:
+      name: webhook
+      webhook:
+        image:
+          repository: ghcr.io/ionos-cloud/external-dns-ionos-webhook
+          tag: v0.12.0
+          pullPolicy: IfNotPresent
+        env:
+        - name: LOG_LEVEL
+          value: debug # reduce in production
+        - name: IONOS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ionos-credentials
+              key: api-key
+        # The webhook server listens on localhost by default. Otherwise, you can set SERVER_HOST.
+        - name: SERVER_PORT
+          value: "8888" # default and recommended port for exposing webhook provider EPs
+        # The exposed server listens on all interfaces (0.0.0.0) by default. Otherwise, you can set METRICS_HOST.
+        - name: METRICS_PORT
+          value: "8080" # default and recommended port for exposing metrics and health EPs
+        - name: IONOS_DEBUG
+          value: "true" # change to "true" if you want see details of the http requests
+        - name: DRY_RUN
+          value: "true" # set to "false" when you want to allow making changes to your DNS resources

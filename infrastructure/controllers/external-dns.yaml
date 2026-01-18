@@ -30,9 +30,15 @@ spec:
     strategy:
       name: RetryOnFailure
       retryInterval: 3m
-  chartRef:
-    kind: OCIRepository
-    name: external-dns
+  chart:
+    spec:
+      chart: external-dns
+      version: "v0.20.0"
+      sourceRef:
+        kind: HelmRepository
+        name: external-dns
+        namespace: external-dns
+      interval: 12h
   values:
     image:
       tag: v0.20.0

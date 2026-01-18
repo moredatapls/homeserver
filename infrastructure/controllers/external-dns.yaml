@@ -13,42 +13,6 @@ spec:
   interval: 24h
   url: https://kubernetes-sigs.github.io/external-dns/
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-    name: ionos-credentials
-    namespace: external-dns
-type: Opaque
-data:
-    api-key: ENC[AES256_GCM,data:Hf2MlFc4lxE08m/coyM0FCyae57UXqozhTqI5XINZF74R5nPscgm3xZpIkw9BNYGLFL2n7+Tbgx1leeNmGk0GFojgAXL+pCpAORnXjOy/rP9Im4+8B5LU1spRZdFOAurF3M5cFDOHgp7CrdZl039FCmoW9qPrrbTUnCZ4Hkq9LErIURvM2q8iD/VOEfnXa/oSpzTmgU=,iv:oTMT79sKw5VCcITDQRyj8YF5CQ8yAfShaF3n1+pmnT8=,tag:Xwz73fTxoLYphDaepBo1jg==,type:str]
-sops:
-    lastmodified: "2026-01-18T17:11:56Z"
-    mac: ENC[AES256_GCM,data:YvwABKhPi3DRp6WEGCGPgJfoV6I0gPv+xBA+u+vEGCbqNX7Ugxl8LE134AO5kQULWy5/yRmh+KVgOuiH99d1BuOT/YVeZqPbsln56CNdsNUeTCTwnVjJ5uZTNTKh8vCfDTIwsAKYWQ1J5yLCdwEkovO2lNz8Uu0kQYbDXzwuCkw=,iv:e3AY1LCmIuFZcRsv0m61LBuQroyTIZnqBtxmDgprk1U=,tag:Aw/5iRoLhyJLjfuWTacoaA==,type:str]
-    pgp:
-        - created_at: "2026-01-18T17:11:56Z"
-          enc: |-
-            -----BEGIN PGP MESSAGE-----
-
-            hQIMA4KQPv9+DbRsAQ//cfDKXlLR0XhznV8ratItDTL3xqzyPx2OTinbdZXDJ9Li
-            s17cuPzoot1jKRGeh5sdivCcq3vu0lcuzEWWtIbZoL5E4XxdChX2pMELKbBjXyFk
-            Ysa42VO9FO3V5FRHmN59zmbm/vJ0G2D/nsRSidLOqPgE1jbFZXBBHMsH3/2jJvAW
-            9s8Phg7xO/ZjuZKvg6Y4dAIGig8mFQFDXUX73SNQZ2Iw2sDkn8Qivdx4C/ry6ceC
-            mdlU9G63IOa5MJ5wpNqhssHWfnciAP0Ls7LKJVusi0xmNw1RNBPbQxa+Ps5MIueO
-            /5FNsEAXU1waqLU9FOlBG23zw/hgwLzqwa39sfusgBq+9R1esaf5NBW/RSDFSy9z
-            Pydof1DYmmxPRa5yIaxJ0OvGo66wv8K5Ewu9yaEwX60XApHMuA+Dzs0Dby5Rw2PF
-            e/FBIkzxVkXhQ/tX9TPr8V9LT85pgrNtPNs5AGVHMs+gDwH63FSPw0diaXaQmpGq
-            Kfl8b79gCrhHvWM1vMP5J3PGBWzsyCUY/n/jGHb/zkxIuox5Q0msH7lBiVXlJWRb
-            jiZRcfNz3hNheNNPSwWr5mtfBMjOu/EMiv3AapPLTvU7GrweZ2JL4Ot86X3nCaCd
-            Kgc0/vQE4xSdq65ospvKzSTraysJYCO7SVqt6wGYX9qq/NyN4Vt+KRqyUw9MN3rU
-            ZgEJAhDhQWEHvNb2sTM7Joyj7jRwhZxRV215jD3k6jnaiZsOU3TiicfdIYevA8R2
-            5llOxH6+ASZAoIlYoWPnFloJqc+3x1LuSVyRec1JQ7R1NN9OuUaW2pE/dCfN9N3h
-            cpnYNM/zNA==
-            =0D2+
-            -----END PGP MESSAGE-----
-          fp: CA5041D30E6B1755A06AD223242A7AC1A18F40E8
-    encrypted_regex: ^(data|stringData)$
-    version: 3.11.0
----
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:

@@ -45,12 +45,16 @@ spec:
       admissionWebhooks:
         certManager:
           enabled: true
+      # we want to use the host network for our ingresses
       hostNetwork: true
+      # run a single controller pod per node, NodePort services won't work otherwise
       kind: DaemonSet
       service:
+        # bind ports on the node (allows us to use ports 80, 443 etc.) and we don't need to run a load balancer
         type: "NodePort"
+        # register external IPs of the host network, this is required for external-dns to create correct DNS records
         externalIPs:
-          # IP of the node where Kubernetes is running
+          # IP of the node where Kubernetes is running, this needs to be a static IP
           - "192.168.178.104"
       
     # expose pi-hole as a DNS server on port 53

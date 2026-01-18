@@ -99,7 +99,7 @@ Furthermore, to get DNS to work, I have to add the hostnames of all ingresses to
 
 The Pi-Hole setup is mostly based on the [Pi-Hole auf Kubernetes](https://www.trion.de/news/2025/01/26/pi-hole-kubernetes.html) article.
 
-To bind the port 53 on my Ubuntu server, I had to disable `systemd-resolved`. I followed [this StackOverflow](https://askubuntu.com/a/907249) answer to disable the service.
+To bind the port 53 on my Ubuntu server, I had to disable `systemd-resolved`. I followed [this guide](https://mattei.io/network/ubuntu/ipv6/2024/05/19/ubuntu-24-04-disable-systemd-resolved-stub-listener.html) to disable the service.
 
 ### Home Assistant
 

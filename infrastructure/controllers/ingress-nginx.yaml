@@ -51,3 +51,9 @@ spec:
       kind: DaemonSet
       service:
         type: "NodePort"
+      
+      # expose pi-hole as a DNS server on port 53
+      tcp:
+        "53": "pi-hole/dns:53"
+      udp:
+        "53": "pi-hole/dns:53"

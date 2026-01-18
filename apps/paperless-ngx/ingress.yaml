@@ -15,6 +15,6 @@ spec:
           service:
             name: ui
             port:
-              number: 8123
+              number: 8000
         path: /
         pathType: Prefix

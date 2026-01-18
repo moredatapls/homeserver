@@ -20,7 +20,8 @@ spec:
                   number: 8123
             path: /
             pathType: Prefix
-  tls:
-    - hosts:
-        - homeassistant.berlin.bruegner.com
-      secretName: home-assistant-tls
+  # TODO deactivate until cert-manager is working
+  # tls:
+  #   - hosts:
+  #       - homeassistant.berlin.bruegner.com
+  #     secretName: home-assistant-tls

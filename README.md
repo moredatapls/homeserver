@@ -101,6 +101,10 @@ The Pi-Hole setup is mostly based on the [Pi-Hole auf Kubernetes](https://www.tr
 
 To bind the port 53 on my Ubuntu server, I had to disable `systemd-resolved`. I followed [this guide](https://mattei.io/network/ubuntu/ipv6/2024/05/19/ubuntu-24-04-disable-systemd-resolved-stub-listener.html) to disable the service.
 
+**TODOs**:
+
+- Currently, the client IPs are not visible, and only cluster-internal IP addresses are shown
+
 ### Home Assistant
 
 The Home Assistant setup is mostly based on the [Home Assistant in Kubernetes the simple way](https://blog.quadmeup.com/2025/04/07/how-to-run-home-assistant-in-kubernetes/) guide.

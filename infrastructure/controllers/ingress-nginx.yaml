@@ -50,9 +50,6 @@ spec:
       config:
         # use forward-for header to get real client IPs
         use-forwarded-headers: "true"
-      
-      # Preserve source IPs for services behind the ingress
-      externalTrafficPolicy: Local
 
       # we want to use the host network for our ingresses
       hostNetwork: true
@@ -61,6 +58,10 @@ spec:
       service:
         # bind ports on the node (allows us to use ports 80, 443 etc.) and we don't need to run a load balancer
         type: "NodePort"
+
+        # Preserve source IPs for services behind the ingress
+        externalTrafficPolicy: Local
+
         # register external IPs of the host network, this is required for external-dns to create correct DNS records
         externalIPs:
           # IP of the node where Kubernetes is running, this needs to be a static IP

@@ -1,8 +1,26 @@
-# Home server
-
 <img style="width: 120px;" src="https://github.com/moredatapls/homeserver/blob/main/img/logo.png">
 
-## Repo
+# Homeserver on K8s
+
+## The Server
+
+My server is a HP N54L ProLiant Microserver. This [blog post](https://blog.brianewell.com/hp-n54l-microserver/) breaks down its features.
+
+It's running Ubuntu Server 24.04 LTS. I setup a software RAID 1 ([mdadm](https://linux.die.net/man/8/mdadm)).
+
+I run Kubernetes using [k0s](https://k0sproject.io/). It was extremely easy to install. I didn't use the single-node installation, but wanted to retain the option to later extend my cluster with additional nodes:
+
+```sh
+sudo k0s install controller --enable-worker --no-taints
+```
+
+So far, I didn't have to customize any of k0s's default settings.
+
+Since I am just running a single-node cluster, volumes are currently mounted directly on the host. I might change this later and attach my NAS instead.
+
+## Flux Setup
+
+### Repo
 
 The repo contains the following directories:
 
@@ -10,7 +28,7 @@ The repo contains the following directories:
 - `clusters/berlin/`: contains the core Flux setup of my server at home
 - `controllers/`: contains core system components, like the ingress, DNS management, and storage classes
 
-## Setup
+### Bootstrapping
 
 * Install FluxCD using [GitHub bootstrapping](https://fluxcd.io/flux/installation/bootstrap/github/):
   ```sh
@@ -116,6 +134,20 @@ The Home Assistant setup is mostly based on the [Home Assistant in Kubernetes th
 
 To integrate Matter, I had to spin up a separate deployment based on the [matter-js/python-matter-server](https://github.com/matter-js/python-matter-server/). This is needed because the container-based setup of Home Assistant [does not support Add-Ons](https://www.home-assistant.io/installation/#about-installation-types). The Matter container setup was based on [this documentation](https://github.com/matter-js/python-matter-server/blob/main/docs/docker.md) by the server maintainers.
 
+**TODOs**:
+
+- Add Thread support
+
 ### Paperless-ngx
 
 The Paperless-ngx setup is mostly based on the [Docker Compose](https://github.com/paperless-ngx/paperless-ngx/blob/dev/docker/compose/docker-compose.sqlite.yml) file and the [official Docker Compose setup guide](https://docs.paperless-ngx.com/setup/#docker) of the project.
+
+**TODOs**:
+
+- Sync the data with Nextcloud
+
+### Backups
+
+**TODOs**:
+
+- Backup the storage

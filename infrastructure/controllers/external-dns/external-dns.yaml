@@ -57,11 +57,15 @@ spec:
           tag: v0.9.0
           pullPolicy: IfNotPresent
         env:
+          # this is a cloud API token
           - name: HETZNER_API_KEY
             valueFrom:
               secretKeyRef:
                 name: hetzner-credentials
                 key: api-key
+          # use the new cloud API
+          - name: USE_CLOUD_API
+            value: "true"
         livenessProbe:
           httpGet:
             path: /health

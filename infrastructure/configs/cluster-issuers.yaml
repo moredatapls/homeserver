@@ -11,9 +11,9 @@ spec:
     solvers:
       - dns01:
           webhook:
-            groupName: hetzner.cert-mananger-webhook.noshoes.xyz
             solverName: hetzner
+            groupName: acme.hetzner.com
             config:
-              secretName: hetzner-credentials
-              zoneName: bruegner.com
-              apiUrl: https://dns.hetzner.com/api/v1
+              tokenSecretKeyRef:
+                name: hetzner-credentials
+                key: api-key

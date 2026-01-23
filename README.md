@@ -1,6 +1,6 @@
 <div align="center">
   <br/>
-  <img style="width: 120px;" src="https://github.com/moredatapls/homeserver/blob/main/img/logo.png">
+  <img style="width: 100%;" src="https://github.com/moredatapls/homeserver/blob/main/img/logo.png">
   <br/>
 </div>
 

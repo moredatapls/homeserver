@@ -40,4 +40,6 @@ spec:
   chartRef:
     kind: HelmChart
     name: cert-manager-webhook-hetzner
-  values: {}
+  values:
+    secretName:
+      - hetzner-credentials

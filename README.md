@@ -4,9 +4,7 @@
   <br/>
 </div>
 
-# Homeserver on K8s
-
-## The Server
+# The Server
 
 My server is a HP N54L ProLiant Microserver. This [blog post](https://blog.brianewell.com/hp-n54l-microserver/) breaks down its features.
 
@@ -22,9 +20,9 @@ So far, I didn't have to customize any of k0s's default settings.
 
 Since I am just running a single-node cluster, volumes are currently mounted directly on the host. I might change this later and attach my NAS instead.
 
-## Flux Setup
+# Flux Setup
 
-### Repo
+## Repo
 
 The repo contains the following directories:
 
@@ -32,7 +30,7 @@ The repo contains the following directories:
 - `clusters/berlin/`: contains the core Flux setup of my server at home
 - `controllers/`: contains core system components, like the ingress, DNS management, and storage classes
 
-### Bootstrapping
+## Bootstrapping
 
 * Install FluxCD using [GitHub bootstrapping](https://fluxcd.io/flux/installation/bootstrap/github/):
   ```sh
@@ -46,7 +44,7 @@ The repo contains the following directories:
 * Install the SOPS secret (from the password safe): `kubectl apply -f sops-gpg.yaml`
 * Complete the prerequisites of the [Tailscale K8s installation](https://tailscale.com/kb/1236/kubernetes-operator#prerequisites)
 
-### SOPS
+## SOPS
 
 The cluster setup uses SOPS to encrypt keys. This way, they can safely be pushed to the GitHub repo. Flux then decrypts the secrets during reconcilation inside the cluster.
 
@@ -92,9 +90,9 @@ spec:
       name: sops-gpg
 ```
 
-## Apps
+# Apps
 
-### Ingress-NGINX, External-DNS, Cert-Manager
+## Ingress-NGINX, External-DNS, Cert-Manager
 
 I am running Ingress-NGINX in NodePort mode because I don't want to manage a load balancer - at least for now. This is sufficient for now as I am running a single-node cluster.
 
@@ -122,7 +120,7 @@ My domains are registered with IONOS, but DNS is managed at Hetzner Cloud. They 
 - [external-dns-hetzner-webhook](https://github.com/hetzner/external-dns-hetzner-webhook)
 - [cert-manager-webhook-hetzner](https://github.com/hetzner/cert-manager-webhook-hetzner)
 
-### Pi-Hole
+## Pi-Hole
 
 The Pi-Hole setup is mostly based on the [Pi-Hole auf Kubernetes](https://www.trion.de/news/2025/01/26/pi-hole-kubernetes.html) article.
 
@@ -175,7 +173,7 @@ spec:
 # ...
 ```
 
-### Home Assistant
+## Home Assistant
 
 The Home Assistant setup is mostly based on the [Home Assistant in Kubernetes the simple way](https://blog.quadmeup.com/2025/04/07/how-to-run-home-assistant-in-kubernetes/) guide.
 
@@ -185,7 +183,7 @@ To integrate Matter, I had to spin up a separate deployment based on the [matter
 
 - Add Thread support
 
-### Paperless-ngx
+## Paperless-ngx
 
 The Paperless-ngx setup is mostly based on the [Docker Compose](https://github.com/paperless-ngx/paperless-ngx/blob/dev/docker/compose/docker-compose.sqlite.yml) file and the [official Docker Compose setup guide](https://docs.paperless-ngx.com/setup/#docker) of the project.
 
@@ -193,7 +191,7 @@ The Paperless-ngx setup is mostly based on the [Docker Compose](https://github.c
 
 - Sync the data with Nextcloud
 
-### Backups
+## Backups
 
 **TODOs**:
 

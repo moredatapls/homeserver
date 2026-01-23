@@ -124,9 +124,52 @@ The Pi-Hole setup is mostly based on the [Pi-Hole auf Kubernetes](https://www.tr
 
 To bind the port 53 on my Ubuntu server, I had to disable `systemd-resolved`. I followed [this guide](https://mattei.io/network/ubuntu/ipv6/2024/05/19/ubuntu-24-04-disable-systemd-resolved-stub-listener.html) to disable the service.
 
-**TODOs**:
+Initially, I ran pi-hole with TCP and UDP ports exposed by ingress-nginx, but I switched to pi-hole pod in host network mode with host ports. This was necessary for two reasons:
 
-- Currently, the client IPs are not visible, and only cluster-internal IP addresses are shown
+- DNS expects the port 53, so they need to be available at the host IP
+- Host ports with host networking preserves the source IPs of the devices in my network that send DNS requests
+
+Thus, the current configuration looks something like this:
+
+```yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: server
+  namespace: pi-hole
+spec:
+  # ...
+  template:
+    # ...
+    spec:
+      hostNetwork: true
+      containers:
+        - name: server
+          image: pihole/pihole:latest
+          env:
+            # ...
+            # use a custom port for the webserver
+            - name: FTLCONF_webserver_port
+              value: "10080"
+          ports:
+            - name: dns-tcp
+              containerPort: 53
+              # ensure that port 53 is available, see above
+              hostPort: 53
+              protocol: TCP
+            - name: dns-udp
+              containerPort: 53
+              # ensure that port 53 is available, see above
+              hostPort: 53
+              protocol: UDP
+            - name: http
+              # this port gets routed via NGINX
+              containerPort: 10080
+              # pick a port that is not exposed on the host!
+              hostPort: 10080
+              protocol: TCP
+# ...
+```
 
 ### Home Assistant
 

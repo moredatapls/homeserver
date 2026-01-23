@@ -5,6 +5,8 @@ metadata:
   namespace: pi-hole
   labels:
     app: pi-hole
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
 spec:
   ingressClassName: nginx
   rules:
@@ -18,3 +20,7 @@ spec:
               number: 80
         path: /
         pathType: Prefix
+  tls:
+    - hosts:
+        - pihole.berlin.bruegner.com
+      secretName: pi-hole-tls

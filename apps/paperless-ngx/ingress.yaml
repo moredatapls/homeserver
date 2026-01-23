@@ -5,6 +5,8 @@ metadata:
   namespace: paperless-ngx
   labels:
     app: paperless-ngx-ui
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
 spec:
   ingressClassName: nginx
   rules:
@@ -18,3 +20,7 @@ spec:
               number: 8000
         path: /
         pathType: Prefix
+  tls:
+    - hosts:
+        - paperless.berlin.bruegner.com
+      secretName: paperless-ngx-tls

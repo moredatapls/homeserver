@@ -53,31 +53,14 @@ spec:
       name: webhook
       webhook:
         image:
-          repository: ghcr.io/mconfalonieri/external-dns-hetzner-webhook
-          tag: v0.9.0
-          pullPolicy: IfNotPresent
+          repository: docker.io/hetzner/external-dns-hetzner-webhook
+          tag: v0.3.2
         env:
-          # this is a cloud API token
-          - name: HETZNER_API_KEY
+          - name: HETZNER_TOKEN
             valueFrom:
               secretKeyRef:
                 name: hetzner-credentials
                 key: api-key
-          # use the new cloud API
-          - name: USE_CLOUD_API
-            value: "true"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: http-webhook
-          initialDelaySeconds: 10
-          timeoutSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: http-webhook
-          initialDelaySeconds: 10
-          timeoutSeconds: 5
     
     extraArgs:
       - "--txt-prefix=reg-%{record_type}-"

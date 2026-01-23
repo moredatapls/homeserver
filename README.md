@@ -95,6 +95,8 @@ controller:
 
 Furthermore, to get DNS to work, I have to add the hostnames of all ingresses to the DNS rebind protection exclusion list in my FritzBox. By default, FritzBoxes block DNS requests that point to its own network.
 
+My domains are registered with IONOS, but Hetzner Cloud has a great (and free) DNS service.
+
 ### Pi-Hole
 
 The Pi-Hole setup is mostly based on the [Pi-Hole auf Kubernetes](https://www.trion.de/news/2025/01/26/pi-hole-kubernetes.html) article.

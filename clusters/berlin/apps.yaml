@@ -7,6 +7,7 @@ spec:
   dependsOn:
     - name: infra-controllers
     - name: infra-controllers-cert-manager
+    - name: infra-controllers-external-dns
   interval: 1h
   retryInterval: 2m
   timeout: 5m
@@ -30,6 +31,7 @@ spec:
   dependsOn:
     - name: infra-controllers
     - name: infra-controllers-cert-manager
+    - name: infra-controllers-external-dns
   interval: 1m
   retryInterval: 2m
   timeout: 5m
@@ -53,6 +55,7 @@ spec:
   dependsOn:
     - name: infra-controllers
     - name: infra-controllers-cert-manager
+    - name: infra-controllers-external-dns
   interval: 1m
   retryInterval: 2m
   timeout: 5m
@@ -76,6 +79,7 @@ spec:
   dependsOn:
     - name: infra-controllers
     - name: infra-controllers-cert-manager
+    - name: infra-controllers-external-dns
   interval: 1m
   retryInterval: 2m
   timeout: 5m

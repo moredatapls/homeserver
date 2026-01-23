@@ -1,4 +1,8 @@
-<center><img style="width: 120px;" src="https://github.com/moredatapls/homeserver/blob/main/img/logo.png"></center>
+<div align="center">
+  <br/>
+  <img style="width: 120px;" src="https://github.com/moredatapls/homeserver/blob/main/img/logo.png">
+  <br/>
+</div>
 
 # Homeserver on K8s
 

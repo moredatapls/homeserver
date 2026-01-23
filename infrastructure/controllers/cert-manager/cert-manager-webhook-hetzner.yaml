@@ -1,30 +1,30 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: cert-manager-webhook-ionos-cloud
+  name: cert-manager-webhook-hetzner
   namespace: cert-manager
 spec:
   interval: 5m0s
-  url: https://ionos-cloud.github.io/cert-manager-webhook-ionos-cloud
+  url: https://vadimkim.github.io/cert-manager-webhook-hetzner
 ---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
-  name: cert-manager-webhook-ionos-cloud
+  name: cert-manager-webhook-hetzner
   namespace: cert-manager
 spec:
   interval: 5m0s
-  chart: cert-manager-webhook-ionos-cloud
+  chart: cert-manager-webhook-hetzner
   reconcileStrategy: ChartVersion
   sourceRef:
     kind: HelmRepository
-    name: cert-manager-webhook-ionos-cloud
+    name: cert-manager-webhook-hetzner
   version: "*"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: cert-manager-webhook-ionos-cloud
+  name: cert-manager-webhook-hetzner
   namespace: cert-manager
 spec:
   interval: 12h
@@ -39,5 +39,5 @@ spec:
       retryInterval: 3m
   chartRef:
     kind: HelmChart
-    name: cert-manager-webhook-ionos-cloud
+    name: cert-manager-webhook-hetzner
   values: {}

@@ -17,7 +17,7 @@ spec:
           service:
             name: admin
             port:
-              number: 80
+              number: 10080
         path: /
         pathType: Prefix
   tls:

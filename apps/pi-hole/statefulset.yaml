@@ -30,6 +30,8 @@ spec:
                 secretKeyRef:
                   name: pi-hole-admin
                   key: password
+            - name: FTLCONF_webserver_port
+              value: "10080"
           ports:
             - name: dns-tcp
               containerPort: 53
@@ -39,12 +41,10 @@ spec:
               containerPort: 53
               hostPort: 53
               protocol: UDP
-            # - name: http
-            #   containerPort: 80
-            #   protocol: TCP
-            # - name: https
-            #   containerPort: 443
-            #   protocol: TCP
+            - name: http
+              containerPort: 10080
+              hostPort: 10080
+              protocol: TCP
           livenessProbe:
             httpGet:
               path: /admin

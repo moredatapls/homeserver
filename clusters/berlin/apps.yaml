@@ -5,7 +5,9 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: infra-controllers
+    - name: infra-controllers-ingress-nginx
+    - name: infra-controllers-cert-manager
+    - name: infra-controllers-external-dns
   interval: 1h
   retryInterval: 2m
   timeout: 5m
@@ -27,7 +29,9 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: infra-controllers
+    - name: infra-controllers-ingress-nginx
+    - name: infra-controllers-cert-manager
+    - name: infra-controllers-external-dns
   interval: 1m
   retryInterval: 2m
   timeout: 5m
@@ -49,7 +53,9 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: infra-controllers
+    - name: infra-controllers-ingress-nginx
+    - name: infra-controllers-cert-manager
+    - name: infra-controllers-external-dns
   interval: 1m
   retryInterval: 2m
   timeout: 5m
@@ -71,7 +77,9 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: infra-controllers
+    - name: infra-controllers-ingress-nginx
+    - name: infra-controllers-cert-manager
+    - name: infra-controllers-external-dns
   interval: 1m
   retryInterval: 2m
   timeout: 5m

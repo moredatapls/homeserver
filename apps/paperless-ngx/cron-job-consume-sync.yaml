@@ -36,5 +36,5 @@ spec:
           volumes:
           - name: consume
             persistentVolumeClaim:
-              claimName: paperless-consume
+              claimName: paperless-ngx-consume
           restartPolicy: OnFailure

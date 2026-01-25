@@ -33,3 +33,6 @@ data:
   # I added the Nextloud client sync DB file (.sync_...db) to the list of defaults
   # For more details, see https://docs.paperless-ngx.com/configuration/#PAPERLESS_CONSUMER_IGNORE_PATTERNS
   PAPERLESS_CONSUMER_IGNORE_PATTERNS: '[".DS_Store", ".DS_STORE", "._*", ".stfolder/*", ".stversions/*", ".localized/*", "desktop.ini", "@eaDir/*", "Thumbs.db", ".sync_*"]'
+
+  # Configure the filename format for exported documents
+  PAPERLESS_FILENAME_FORMAT: '{{ document_type }}/{{ correspondent }}/{{ created }}_{{ title }}'

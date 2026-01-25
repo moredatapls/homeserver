@@ -12,6 +12,8 @@ spec:
     metadata:
       labels:
         app: paperless-ngx-ui
+    strategy:
+      type: Recreate
     spec:
       containers:
       - name: paperless-ngx

@@ -4,7 +4,8 @@ metadata:
   name: paperless-export-sync
   namespace: paperless-ngx
 spec:
-  schedule: "*/15 * * * *"
+  # trigger nightly at 2am after the export trigger
+  schedule: "0 2 * * *"
   jobTemplate:
     spec:
       template:

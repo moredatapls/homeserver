@@ -1,16 +1,16 @@
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: paperless-export-trigger
-  namespace: paperless-ngx
-spec:
-  # trigger with -10 minutes offset to prepare the data for the export-sync job
-  schedule: "10-59/15 * * * *"
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          containers:
-            - name: paperless-export-trigger
-              image: bitnami/kubectl:latest
-          restartPolicy: OnFailure
+# apiVersion: batch/v1
+# kind: CronJob
+# metadata:
+#   name: paperless-export-trigger
+#   namespace: paperless-ngx
+# spec:
+#   # trigger nightly at 1am
+#   schedule: "0 1 * * *"
+#   jobTemplate:
+#     spec:
+#       template:
+#         spec:
+#           containers:
+#             - name: paperless-export-trigger
+#               image: bitnami/kubectl:latest
+#           restartPolicy: OnFailure

@@ -61,6 +61,6 @@ spec:
               secretKeyRef:
                 name: hetzner-credentials
                 key: api-key
-    
+
     extraArgs:
       - "--txt-prefix=reg-%{record_type}-"

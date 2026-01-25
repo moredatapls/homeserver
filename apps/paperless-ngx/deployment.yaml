@@ -16,33 +16,33 @@ spec:
       type: Recreate
     spec:
       containers:
-      - name: paperless-ngx
-        image: ghcr.io/paperless-ngx/paperless-ngx:latest
-        ports:
-        - containerPort: 8000
-          name: http
-        envFrom:
-        - configMapRef:
-            name: ui-config
-        volumeMounts:
-        - name: data
-          mountPath: /usr/src/paperless/data
-        - name: media
-          mountPath: /usr/src/paperless/media
-        - name: export
-          mountPath: /usr/src/paperless/export
-        - name: consume
-          mountPath: /usr/src/paperless/consume
+        - name: paperless-ngx
+          image: ghcr.io/paperless-ngx/paperless-ngx:latest
+          ports:
+            - containerPort: 8000
+              name: http
+          envFrom:
+            - configMapRef:
+                name: ui-config
+          volumeMounts:
+            - name: data
+              mountPath: /usr/src/paperless/data
+            - name: media
+              mountPath: /usr/src/paperless/media
+            - name: export
+              mountPath: /usr/src/paperless/export
+            - name: consume
+              mountPath: /usr/src/paperless/consume
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: paperless-ngx-data
-      - name: media
-        persistentVolumeClaim:
-          claimName: paperless-ngx-media
-      - name: export
-        persistentVolumeClaim:
-          claimName: paperless-ngx-export
-      - name: consume
-        persistentVolumeClaim:
-          claimName: paperless-ngx-consume
+        - name: data
+          persistentVolumeClaim:
+            claimName: paperless-ngx-data
+        - name: media
+          persistentVolumeClaim:
+            claimName: paperless-ngx-media
+        - name: export
+          persistentVolumeClaim:
+            claimName: paperless-ngx-export
+        - name: consume
+          persistentVolumeClaim:
+            claimName: paperless-ngx-consume

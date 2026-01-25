@@ -10,16 +10,16 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: paperless.berlin.bruegner.com
-    http:
-      paths:
-      - backend:
-          service:
-            name: ui
-            port:
-              number: 8000
-        path: /
-        pathType: Prefix
+    - host: paperless.berlin.bruegner.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: ui
+                port:
+                  number: 8000
+            path: /
+            pathType: Prefix
   tls:
     - hosts:
         - paperless.berlin.bruegner.com

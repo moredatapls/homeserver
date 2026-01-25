@@ -14,15 +14,15 @@ spec:
         app: paperless-ngx-redis
     spec:
       containers:
-      - name: redis
-        image: docker.io/library/redis:8
-        ports:
-        - containerPort: 6379
-          name: redis
-        volumeMounts:
-        - name: data
-          mountPath: /data
+        - name: redis
+          image: docker.io/library/redis:8
+          ports:
+            - containerPort: 6379
+              name: redis
+          volumeMounts:
+            - name: data
+              mountPath: /data
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: paperless-ngx-redis-data
+        - name: data
+          persistentVolumeClaim:
+            claimName: paperless-ngx-redis-data

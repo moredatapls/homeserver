@@ -36,7 +36,7 @@ spec:
     required:
       nodeSelectorTerms:
         - matchExpressions:
-          - key: kubernetes.io/hostname
-            operator: In
-            values:
-              - alderaan
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - alderaan

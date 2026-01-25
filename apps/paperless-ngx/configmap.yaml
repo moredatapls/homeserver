@@ -8,24 +8,24 @@ data:
   # Uncomment and set this to your UID and GID on the host so that you have write access
   # USERMAP_UID: "1000"
   # USERMAP_GID: "1000"
-  
+
   # This is required if you will be exposing Paperless-ngx on a public domain
   # Uncomment and adjust as needed
   PAPERLESS_URL: "https://paperless.berlin.bruegner.com"
-  
+
   # Adjust this key if you plan to make paperless available publicly.
   # It should be a very long sequence of random characters.
   # PAPERLESS_SECRET_KEY: "change-me"
-  
+
   # Use this variable to set a timezone for the Paperless Docker containers. Defaults to UTC.
   PAPERLESS_TIME_ZONE: "Europe/Berlin"
-  
+
   # The default language to use for OCR. Set this to the language most of your documents are written in.
   # PAPERLESS_OCR_LANGUAGE: "eng"
-  
+
   # Additional languages to install for text recognition, separated by a whitespace.
   # PAPERLESS_OCR_LANGUAGES: "tur ces"
-  
+
   # Redis connection string
   PAPERLESS_REDIS: "redis://redis.paperless-ngx.svc.cluster.local:6379"
 
@@ -35,4 +35,4 @@ data:
   PAPERLESS_CONSUMER_IGNORE_PATTERNS: '[".DS_Store", ".DS_STORE", "._*", ".stfolder/*", ".stversions/*", ".localized/*", "desktop.ini", "@eaDir/*", "Thumbs.db", ".sync_*"]'
 
   # Configure the filename format for exported documents
-  PAPERLESS_FILENAME_FORMAT: '{{ document_type }}/{{ correspondent }}/{{ created }}_{{ title }}'
+  PAPERLESS_FILENAME_FORMAT: "{{ document_type }}/{{ correspondent }}/{{ created }}_{{ title }}"

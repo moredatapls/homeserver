@@ -25,7 +25,7 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/data/paperless-ngx/redis/data  
+    path: /mnt/data/paperless-ngx/redis/data
   claimRef:
     name: paperless-ngx-redis-data
     namespace: paperless-ngx

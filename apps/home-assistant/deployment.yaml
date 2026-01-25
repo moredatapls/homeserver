@@ -11,11 +11,11 @@ spec:
     matchLabels:
       app: home-assistant
   template:
-    strategy:
-      type: Recreate
     metadata:
       labels:
         app: home-assistant
+    strategy:
+      type: Recreate
     spec:
       containers:
         - name: home-assistant

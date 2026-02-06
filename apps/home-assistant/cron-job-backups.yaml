@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: home-assistant-backups-sync
+  namespace: home-assistant
+spec:
+  # the backups are created between 4:45 and 5:45, trigger with a bit of buffer
+  schedule: "0 7 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: home-assistant-backups
+              image: mbentley/nextcloud-client:latest
+              env:
+                - name: NEXTCLOUD_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-credentials
+                      key: url
+                - name: USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-credentials
+                      key: username
+                - name: PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-credentials
+                      key: password
+                - name: OPTIONS
+                  value: "--non-interactive --path /home-assistant/backups"
+              volumeMounts:
+                - name: backups
+                  mountPath: /data
+          volumes:
+            - name: backups
+              persistentVolumeClaim:
+                claimName: home-assistant-backups
+          restartPolicy: OnFailure

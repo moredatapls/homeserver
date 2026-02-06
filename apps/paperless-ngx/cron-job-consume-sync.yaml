@@ -5,14 +5,15 @@ metadata:
   namespace: paperless-ngx
 spec:
   schedule: "*/5 * * * *"
-  # 1000:1000 is the user/group id used by paperless-ngx, see its Dockerfile
-  securityContext:
-    runAsUser: 1000
-    runAsGroup: 1000
   jobTemplate:
     spec:
       template:
         spec:
+          # 1000:1000 is the user/group id used by paperless-ngx, see its Dockerfile
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
           containers:
             - name: paperless-consume
               image: mbentley/nextcloud-client:latest

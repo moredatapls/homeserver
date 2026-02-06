@@ -6,14 +6,15 @@ metadata:
 spec:
   # trigger nightly at 2am after the export trigger
   schedule: "0 2 * * *"
-  # 1000:1000 is the user/group id used by paperless-ngx, see its Dockerfile
-  securityContext:
-    runAsUser: 1000
-    runAsGroup: 1000
   jobTemplate:
     spec:
       template:
         spec:
+          # 1000:1000 is the user/group id used by paperless-ngx, see its Dockerfile
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
           containers:
             - name: paperless-export
               image: mbentley/nextcloud-client:latest

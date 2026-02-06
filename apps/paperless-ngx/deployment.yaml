@@ -29,8 +29,8 @@ spec:
               mountPath: /usr/src/paperless/data
             - name: media
               mountPath: /usr/src/paperless/media
-            - name: export
-              mountPath: /usr/src/paperless/export
+            - name: sync
+              mountPath: /usr/src/paperless/sync
             - name: consume
               mountPath: /usr/src/paperless/consume
       volumes:
@@ -40,9 +40,9 @@ spec:
         - name: media
           persistentVolumeClaim:
             claimName: paperless-ngx-media
-        - name: export
+        - name: sync
           persistentVolumeClaim:
-            claimName: paperless-ngx-export
+            claimName: paperless-ngx-sync
         - name: consume
           persistentVolumeClaim:
             claimName: paperless-ngx-consume

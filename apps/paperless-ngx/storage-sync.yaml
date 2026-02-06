@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: paperless-ngx-export
+  name: paperless-ngx-sync
   namespace: paperless-ngx
   labels:
     app: paperless-ngx
@@ -16,7 +16,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: paperless-ngx-export
+  name: paperless-ngx-sync
   namespace: paperless-ngx
 spec:
   capacity:
@@ -25,7 +25,7 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/data/paperless-ngx/export
+    path: /mnt/data/paperless-ngx/sync
   claimRef:
-    name: paperless-ngx-export
+    name: paperless-ngx-sync
     namespace: paperless-ngx

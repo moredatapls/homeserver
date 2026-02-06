@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: paperless-export-sync
+  name: paperless-sync
   namespace: paperless-ngx
 spec:
   # trigger nightly at 2am after the export trigger
@@ -16,7 +16,7 @@ spec:
             runAsGroup: 1000
             fsGroup: 1000
           containers:
-            - name: paperless-export
+            - name: paperless-sync
               image: mbentley/nextcloud-client:latest
               env:
                 - name: NEXTCLOUD_URL
@@ -35,12 +35,12 @@ spec:
                       name: nextcloud-credentials
                       key: password
                 - name: OPTIONS
-                  value: "--non-interactive --path /paperless/export"
+                  value: "--non-interactive --path /paperless/sync"
               volumeMounts:
-                - name: export
+                - name: sync
                   mountPath: /data
           volumes:
-            - name: export
+            - name: sync
               persistentVolumeClaim:
-                claimName: paperless-ngx-export
+                claimName: paperless-ngx-sync
           restartPolicy: OnFailure

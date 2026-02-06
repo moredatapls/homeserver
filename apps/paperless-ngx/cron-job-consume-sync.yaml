@@ -5,6 +5,10 @@ metadata:
   namespace: paperless-ngx
 spec:
   schedule: "*/5 * * * *"
+  # 1000:1000 is the user/group id used by paperless-ngx, see its Dockerfile
+  securityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
   jobTemplate:
     spec:
       template:

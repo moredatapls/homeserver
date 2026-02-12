@@ -179,9 +179,7 @@ The Home Assistant setup is mostly based on the [Home Assistant in Kubernetes th
 
 To integrate Matter, I had to spin up a separate deployment based on the [matter-js/python-matter-server](https://github.com/matter-js/python-matter-server/). This is needed because the container-based setup of Home Assistant [does not support Add-Ons](https://www.home-assistant.io/installation/#about-installation-types). The Matter container setup was based on [this documentation](https://github.com/matter-js/python-matter-server/blob/main/docs/docker.md) by the server maintainers.
 
-**TODOs**:
-
-- Add Thread support
+I integrated Thread using an external border router. I am using a [Tado Bridge X](https://shop.tado.com/en/products/bridge-x) and so far, it has worked flawlessly.
 
 ## Paperless-ngx
 

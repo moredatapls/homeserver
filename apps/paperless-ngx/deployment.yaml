@@ -5,6 +5,8 @@ metadata:
   namespace: paperless-ngx
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: paperless-ngx-ui
@@ -12,8 +14,6 @@ spec:
     metadata:
       labels:
         app: paperless-ngx-ui
-    strategy:
-      type: Recreate
     spec:
       containers:
         - name: paperless-ngx

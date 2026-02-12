@@ -1,11 +1,11 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: paperless-sync
+  name: paperless-nextcloud-sync
   namespace: paperless-ngx
 spec:
-  # trigger nightly at 2am after the export trigger
-  schedule: "0 2 * * *"
+  schedule: "*/5 * * * *"
+  suspend: true # TODO revert
   jobTemplate:
     spec:
       template:
@@ -16,7 +16,7 @@ spec:
             runAsGroup: 1000
             fsGroup: 1000
           containers:
-            - name: paperless-sync
+            - name: paperless-nextcloud-sync
               image: mbentley/nextcloud-client:latest
               env:
                 - name: NEXTCLOUD_URL
@@ -35,7 +35,7 @@ spec:
                       name: nextcloud-credentials
                       key: password
                 - name: OPTIONS
-                  value: "--non-interactive --path /paperless/sync"
+                  value: "--non-interactive --path /paperless"
               volumeMounts:
                 - name: sync
                   mountPath: /data

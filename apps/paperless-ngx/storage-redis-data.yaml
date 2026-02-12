@@ -18,6 +18,8 @@ kind: PersistentVolume
 metadata:
   name: paperless-ngx-redis-data
   namespace: paperless-ngx
+  labels:
+    app: paperless-ngx
 spec:
   capacity:
     storage: 1Gi

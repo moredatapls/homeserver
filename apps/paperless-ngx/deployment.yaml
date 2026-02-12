@@ -29,10 +29,8 @@ spec:
               mountPath: /usr/src/paperless/data
             - name: media
               mountPath: /usr/src/paperless/media
-            - name: export
-              mountPath: /usr/src/paperless/export
-            - name: consume
-              mountPath: /usr/src/paperless/consume
+            - name: sync
+              mountPath: /usr/src/paperless/sync
       volumes:
         - name: data
           persistentVolumeClaim:
@@ -40,12 +38,9 @@ spec:
         - name: media
           persistentVolumeClaim:
             claimName: paperless-ngx-media
-        - name: export
+        - name: sync
           persistentVolumeClaim:
-            claimName: paperless-ngx-sync-export
-        - name: consume
-          persistentVolumeClaim:
-            claimName: paperless-ngx-consume
+            claimName: paperless-ngx-sync
       # prevent two UI pods from being scheduled at a time, only one instance should be running to not corrupt the data
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:

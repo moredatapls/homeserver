@@ -29,6 +29,9 @@ data:
   # Redis connection string
   PAPERLESS_REDIS: "redis://redis.paperless-ngx.svc.cluster.local:6379"
 
+  # Configure the consumer directory
+  PAPERLESS_CONSUMPTION_DIR: "../sync/consume"
+
   # Ignore files during consumption
   # I added the Nextloud client sync DB file (.sync_...db) to the list of defaults
   # For more details, see https://docs.paperless-ngx.com/configuration/#PAPERLESS_CONSUMER_IGNORE_PATTERNS

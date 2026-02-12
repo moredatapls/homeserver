@@ -36,3 +36,12 @@ data:
 
   # Configure the filename format for exported documents
   PAPERLESS_FILENAME_FORMAT: "{{ document_type }}/{{ correspondent }}/{{ created }}_{{ title }}"
+
+  # Delete detected duplicates
+  PAPERLESS_CONSUMER_DELETE_DUPLICATES: "true"
+
+  # Enable recursive consumption of documents in the consume directory
+  PAPERLESS_CONSUMER_RECURSIVE: "true"
+
+  # Enable polling interval in seconds for the consume directory
+  PAPERLESS_CONSUMER_POLLING: "15" # seconds

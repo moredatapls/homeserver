@@ -15,9 +15,11 @@ spec:
       labels:
         app: paperless-ngx-ui
     spec:
+      # this init conainer is needed to set the correct permissions on the sync volume and to initialize the consume and export folders
       initContainers:
         - name: configure-permissions
           image: busybox
+          # the user and group id used by paperless-ngx is 1000, see its Dockerfile
           command: ["sh", "-c", "mkdir -p /sync/consume && mkdir -p /sync/export && chown -R 1000:1000 /sync"]
           volumeMounts:
             - name: sync

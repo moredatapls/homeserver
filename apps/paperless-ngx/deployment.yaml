@@ -51,8 +51,8 @@ spec:
         requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
               matchExpressions:
-                - key: app.kubernetes.io/name
+                - key: app
                   operator: In
                   values:
-                    - paperless-ngx
+                    - paperless-ngx-ui
             topologyKey: "kubernetes.io/hostname"

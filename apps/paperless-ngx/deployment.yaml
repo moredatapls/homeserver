@@ -15,6 +15,13 @@ spec:
       labels:
         app: paperless-ngx-ui
     spec:
+      initContainers:
+        - name: configure-permissions
+          image: busybox
+          command: ["sh", "-c", "mkdir -p /sync/consume && mkdir -p /sync/export && chown -R 1000:1000 /sync"]
+          volumeMounts:
+            - name: sync
+              mountPath: /sync
       containers:
         - name: paperless-ngx
           image: ghcr.io/paperless-ngx/paperless-ngx:latest

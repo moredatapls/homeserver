@@ -17,5 +17,5 @@ spec:
           containers:
             - name: export-trigger
               image: alpine/kubectl:latest
-              command: ["/bin/sh", "-c", "kubectl exec -n paperless-ngx -l app=paperless-ngx -- document_exporter ../sync/export --use-filename-format --delete --use-folder-prefix --compare-checksums"] 
+              command: ["/bin/sh", "-c", "kubectl exec -n paperless-ngx deploy/ui -- document_exporter ../sync/export --use-filename-format --delete --use-folder-prefix --compare-checksums"] 
           restartPolicy: OnFailure

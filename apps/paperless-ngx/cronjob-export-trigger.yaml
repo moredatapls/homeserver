@@ -1,22 +1,21 @@
-# apiVersion: batch/v1
-# kind: CronJob
-# metadata:
-#   name: paperless-export-trigger
-#   namespace: paperless-ngx
-# spec:
-#   # trigger nightly at 1am
-#   schedule: "0 1 * * *"
-#   jobTemplate:
-#     spec:
-#       template:
-#         spec:
-#           containers:
-#             - name: paperless-export-trigger
-#               image: bitnami/kubectl:latest
-#           restartPolicy: OnFailure
-
-# TODO: the command to run:
-# document_exporter ../export --use-filename-format --delete --use-folder-prefix -> problem: nextcloud sync causes conflicts
-# document_exporter ../export --use-filename-format --zip -> problem: exports are not readable in the web UI without unzipping
-# document_exporter ../sync/export --use-filename-format --delete --use-folder-prefix --compare-checksums
+# this pod executes the document_exporter command in the paperless-ngx container
+# this will sync to a folder that will be synced to nextcloud
 # documentation here: https://docs.paperless-ngx.com/administration/#exporter
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: paperless-export-trigger
+  namespace: paperless-ngx
+spec:
+  # trigger nightly at 1am
+  schedule: "0 1 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: export-trigger
+          containers:
+            - name: export-trigger
+              image: alpine/kubectl:latest
+              command: ["/bin/sh", "-c", "kubectl exec -n paperless-ngx -l app=paperless-ngx -- document_exporter ../sync/export --use-filename-format --delete --use-folder-prefix --compare-checksums"] 
+          restartPolicy: OnFailure

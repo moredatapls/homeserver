@@ -5,6 +5,8 @@ metadata:
   namespace: home-assistant
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: matter-server
@@ -15,14 +17,25 @@ spec:
     spec:
       hostNetwork: true
       containers:
-      - name: matter-server
-        image: ghcr.io/matter-js/python-matter-server:stable
-        securityContext:
-          privileged: true
-        volumeMounts:
-        - name: data
-          mountPath: /data
+        - name: matter-server
+          image: ghcr.io/matter-js/python-matter-server:8.1.2
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: data
+              mountPath: /data
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: home-assistant-matter
+        - name: data
+          persistentVolumeClaim:
+            claimName:
+              home-assistant-matter
+      # prevent two matter-server pods from being scheduled at a time, only one instance should be running
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                    - matter-server
+            topologyKey: "kubernetes.io/hostname"

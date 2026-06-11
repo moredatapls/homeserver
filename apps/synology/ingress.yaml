@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: synology
+  namespace: synology
+  labels:
+    app: synology
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: synology.berlin.bruegner.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: synology
+                port:
+                  number: 5000
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - synology.berlin.bruegner.com
+      secretName: synology-tls

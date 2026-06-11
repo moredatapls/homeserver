@@ -93,3 +93,27 @@ spec:
     provider: sops
     secretRef:
       name: sops-gpg
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-synology
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infra-controllers-ingress-nginx
+    - name: infra-controllers-cert-manager
+    - name: infra-controllers-external-dns
+  interval: 1m
+  retryInterval: 2m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/synology
+  prune: true
+  wait: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-gpg

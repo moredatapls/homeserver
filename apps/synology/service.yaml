@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: synology
+  namespace: synology
+  labels:
+    app: synology
+spec:
+  externalIPs:
+    - 192.168.178.136
+  ports:
+    - port: 5000
+      targetPort: 5000
+      name: http
+  selector:
+    app: synology

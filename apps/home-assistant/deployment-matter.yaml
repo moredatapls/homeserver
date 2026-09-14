@@ -18,7 +18,7 @@ spec:
       hostNetwork: true
       containers:
         - name: matter-server
-          image: ghcr.io/matter-js/python-matter-server:8.1.2
+          image: ghcr.io/matter-js/matterjs-server:1.4.0
           securityContext:
             privileged: true
           volumeMounts:

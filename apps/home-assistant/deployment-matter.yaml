@@ -28,7 +28,7 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName:
-              home-assistant-matter
+              home-assistant-matter-v2
       # prevent two matter-server pods from being scheduled at a time, only one instance should be running
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:

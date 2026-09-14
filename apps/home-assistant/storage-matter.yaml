@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: home-assistant-matter
+  name: home-assistant-matter-v2
   namespace: home-assistant
   labels:
     app: home-assistant
@@ -16,7 +16,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: home-assistant-matter
+  name: home-assistant-matter-v2
   namespace: home-assistant
   labels:
     app: home-assistant
@@ -30,7 +30,7 @@ spec:
     path: /mnt/data/home-assistant/matter-v2
     type: DirectoryOrCreate
   claimRef:
-    name: home-assistant-matter
+    name: home-assistant-matter-v2
     namespace: home-assistant
   nodeAffinity:
     required:

@@ -19,7 +19,7 @@ spec:
       initContainers:
         - name: configure-permissions
           image: busybox
-          # the user and group id used by paperless-ngx is 1000, see its Dockerfile
+          # the user and group id used by paperless-ngx is 1000:1000, see its Dockerfile
           command: ["sh", "-c", "mkdir -p /sync/consume && mkdir -p /sync/export && chown -R 1000:1000 /sync"]
           volumeMounts:
             - name: sync

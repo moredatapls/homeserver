@@ -27,7 +27,7 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /mnt/data/home-assistant/matter
+    path: /mnt/data/home-assistant/matter-v2
     type: DirectoryOrCreate
   claimRef:
     name: home-assistant-matter

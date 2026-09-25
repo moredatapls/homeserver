@@ -37,6 +37,9 @@ spec:
     # deploy in tenant isolation mode https://github.com/moredatapls/hermes-agent/blob/main/README.md#multi-tenant-isolation-pattern
     fullnameOverride: hermes-h
 
+    service:
+      enabled: true
+
     ingress:
       enabled: true
       className: nginx

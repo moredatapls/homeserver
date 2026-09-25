@@ -1,0 +1,92 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: hermes-agent
+  namespace: hermes-agent-h
+spec:
+  interval: 1h
+  url: https://github.com/moredatapls/hermes-agent
+  ref:
+    branch: main
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: hermes-agent
+  namespace: hermes-agent-h
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: .
+      sourceRef:
+        kind: GitRepository
+        name: hermes-agent
+        namespace: hermes-agent-h
+      interval: 1h
+  install:
+    createNamespace: false
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 2m
+  upgrade:
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 3m
+  values:
+    # deploy in tenant isolation mode https://github.com/moredatapls/hermes-agent/blob/main/README.md#multi-tenant-isolation-pattern
+    fullnameOverride: hermes-h
+
+    ingress:
+      enabled: true
+      className: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: "letsencrypt"
+      hosts:
+        - host: h.hermes.berlin.bruegner.com
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - hosts:
+            - h.hermes.berlin.bruegner.com
+          secretName: hermes-h-tls
+
+    serviceAccount:
+      create: true
+
+    rbac:
+      create: true
+      rules: []
+        # - apiGroups: [""]
+        #   resources: ["configmaps", "secrets"]
+        #   verbs: ["get", "list", "watch"]
+
+    persistence:
+      enabled: true
+      existingClaim: hermes-h-data
+
+    secrets:
+      #existingSecret: hermes-h-secrets
+
+    networkPolicy:
+      enabled: true
+      policyTypes: [Ingress, Egress]
+      ingress:
+        - from:
+            - namespaceSelector:
+                matchLabels:
+                  kubernetes.io/metadata.name: ingress-nginx
+          ports:
+            - protocol: TCP
+              port: 8642
+      egress:
+        - to:
+            - namespaceSelector:
+                matchLabels:
+                  kubernetes.io/metadata.name: kube-system
+          ports:
+            - protocol: UDP
+              port: 53
+            - protocol: TCP
+              port: 53

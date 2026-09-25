@@ -1,0 +1,43 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: hermes-agent
+  namespace: hermes-agent
+spec:
+  interval: 1h
+  url: https://github.com/moredatapls/hermes-agent
+  ref:
+    branch: main
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: hermes-agent
+  namespace: hermes-agent
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: .
+      sourceRef:
+        kind: GitRepository
+        name: hermes-agent
+        namespace: hermes-agent
+      interval: 1h
+  install:
+    createNamespace: false
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 2m
+  upgrade:
+    strategy:
+      name: RetryOnFailure
+      retryInterval: 3m
+  values:
+    # use the operator mode so we can spawn multiple agents
+    operator:
+      enabled: true
+    
+    # create rbac
+    rbac:
+      create: true

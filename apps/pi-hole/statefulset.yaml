@@ -58,9 +58,15 @@ spec:
               name: pi-hole-etc
             - mountPath: /etc/dnsmasq.d
               name: dnsmasq
+            - mountPath: /dev/shm
+              name: shm
       volumes:
         - name: pi-hole-etc
           persistentVolumeClaim:
             claimName: pi-hole-etc
         - name: dnsmasq
           emptyDir: {}
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi

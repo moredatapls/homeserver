@@ -10,7 +10,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 512Mi
+      storage: 2Gi
   storageClassName: local-storage
 ---
 apiVersion: v1
@@ -22,7 +22,7 @@ metadata:
     app: pi-hole
 spec:
   capacity:
-    storage: 512Mi
+    storage: 2Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain

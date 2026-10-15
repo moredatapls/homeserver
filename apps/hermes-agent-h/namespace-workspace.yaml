@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hermes-agent-h-workspace
+  labels:
+    app: hermes-agent-h
+    # baseline blocks hostPath, privileged and hostNetwork pods created by the agent
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/warn: baseline

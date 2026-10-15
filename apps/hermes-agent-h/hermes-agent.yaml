@@ -64,11 +64,9 @@ spec:
       create: true
 
     rbac:
-      create: true
+      # use custom rbac because the chart can only manage rbac in its own namespace
+      create: false
       rules: []
-        # - apiGroups: [""]
-        #   resources: ["configmaps", "secrets"]
-        #   verbs: ["get", "list", "watch"]
 
     persistence:
       enabled: true
@@ -98,3 +96,41 @@ spec:
               port: 53
             - protocol: TCP
               port: 53
+        - to:
+            - namespaceSelector:
+                matchLabels:
+                  kubernetes.io/metadata.name: hermes-agent-h-workspace
+        # kube-apiserver: service VIP and actual endpoint (policies apply post-DNAT)
+        - to:
+            - ipBlock:
+                cidr: 10.96.0.1/32
+          ports:
+            - protocol: TCP
+              port: 443
+        - to:
+            - ipBlock:
+                cidr: 192.168.178.104/32
+          ports:
+            - protocol: TCP
+              port: 6443
+        # public internet only
+        - to:
+            - ipBlock:
+                cidr: 0.0.0.0/0
+                except:
+                  - 0.0.0.0/8
+                  - 10.0.0.0/8
+                  - 100.64.0.0/10
+                  - 127.0.0.0/8
+                  - 169.254.0.0/16
+                  - 172.16.0.0/12
+                  - 192.168.0.0/16
+                  - 224.0.0.0/4
+                  - 240.0.0.0/4
+            - ipBlock:
+                cidr: ::/0
+                except:
+                  - ::1/128
+                  - fc00::/7
+                  - fe80::/10
+                  - ff00::/8

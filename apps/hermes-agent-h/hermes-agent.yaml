@@ -75,7 +75,7 @@ spec:
       existingClaim: hermes-h-data
 
     secrets:
-      #existingSecret: hermes-h-secrets
+      existingSecret: hermes-h-secrets
 
     networkPolicy:
       enabled: true

@@ -56,6 +56,8 @@ spec:
           provider: auto
           # null drops the chart's OpenRouter default so OPENAI_BASE_URL from the secret applies
           base_url: null
+          # Scaleway only serves /v1/chat/completions, not the Responses API
+          api_mode: chat_completions
         dashboard:
           # ingress-nginx runs with hostNetwork, so requests arrive from the node IP
           trusted_proxies:

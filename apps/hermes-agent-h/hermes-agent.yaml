@@ -72,36 +72,30 @@ spec:
       enabled: true
       existingClaim: hermes-h-data
 
-    extraInitContainersBeforeBootstrap:
-      - name: init-data-permissions
-        image: busybox:1.37.0
-        command: ["sh", "-ec", "chmod 0755 /run-s6 && chown 1000:1000 /data /run-s6"]
-        securityContext:
-          runAsUser: 0
-          runAsGroup: 0
-          runAsNonRoot: false
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop: ["ALL"]
-            add: ["CHOWN"]
-          seccompProfile:
-            type: RuntimeDefault
-        volumeMounts:
-          - name: data
-            mountPath: /data
-          - name: run
-            mountPath: /run-s6
+    # s6-overlay image must boot as root; it remaps the hermes user to HERMES_UID and drops privileges
+    podSecurityContext:
+      runAsUser: 0
+      runAsGroup: 0
+      runAsNonRoot: false
+      fsGroup: 1000
+      fsGroupChangePolicy: OnRootMismatch
+      seccompProfile:
+        type: RuntimeDefault
 
-    # s6-overlay needs a writable /run owned by the container user
-    extraVolumes:
-      - name: run
-        emptyDir:
-          medium: Memory
-          sizeLimit: 64Mi
-    extraVolumeMounts:
-      - name: run
-        mountPath: /run
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: false
+      capabilities:
+        drop: ["ALL"]
+        add: ["CHOWN", "SETUID", "SETGID"]
+      seccompProfile:
+        type: RuntimeDefault
+
+    extraEnv:
+      - name: HERMES_UID
+        value: "1000"
+      - name: HERMES_GID
+        value: "1000"
 
     secrets:
       existingSecret: hermes-h-secrets

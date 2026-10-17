@@ -177,7 +177,26 @@ spec:
 
 The Home Assistant setup is mostly based on the [Home Assistant in Kubernetes the simple way](https://blog.quadmeup.com/2025/04/07/how-to-run-home-assistant-in-kubernetes/) guide.
 
-To integrate Matter, I had to spin up a separate deployment based on the [matter-js/python-matter-server](https://github.com/matter-js/python-matter-server/). This is needed because the container-based setup of Home Assistant [does not support Add-Ons](https://www.home-assistant.io/installation/#about-installation-types). The Matter container setup was based on [this documentation](https://github.com/matter-js/python-matter-server/blob/main/docs/docker.md) by the server maintainers.
+To integrate Matter, I run the [Matter.js server](https://github.com/matter-js/matterjs-server) as a separate deployment because the container-based setup of Home Assistant [does not support Add-Ons](https://www.home-assistant.io/installation/#about-installation-types). Its data volume is separate from the old Python Matter Server volume; the deployment copies the old data into it once so the server can migrate the fabric without modifying the original files. See the [Matter.js Docker documentation](https://github.com/matter-js/matterjs-server/blob/main/docs/docker.md) for server details.
+
+### Matter Server Rollback
+
+If Matter.js fails to migrate or devices do not reconnect, suspend Flux before applying the rollback Deployment so reconciliation does not immediately restore Matter.js:
+
+```sh
+flux suspend kustomization apps-home-assistant -n flux-system
+kubectl apply -f apps/home-assistant/deployment-matter-python.rollback.yaml.disabled
+kubectl rollout status deployment/matter-server -n home-assistant
+```
+
+This starts Python Matter Server against the original `home-assistant-matter` volume. Keep Flux suspended until `apps/home-assistant/deployment-matter.yaml` has also been reverted to Python Matter Server and pushed to Git; then resume and reconcile:
+
+```sh
+flux resume kustomization apps-home-assistant -n flux-system
+flux reconcile kustomization apps-home-assistant -n flux-system --with-source
+```
+
+Do not delete either Matter data volume during rollback. The original volume will not contain devices commissioned or removed after the Matter.js migration, so those changes may need to be repeated after reverting.
 
 I integrated Thread using an external border router. I am using a [Tado Bridge X](https://shop.tado.com/en/products/bridge-x) and so far, it has worked flawlessly.
 
@@ -191,6 +210,9 @@ The Paperless-ngx setup is mostly based on the [Docker Compose](https://github.c
 
 ## Backups
 
-**TODOs**:
+Nextcloud is the off-node copy for the configured application backups:
 
-- Backup the storage
+- Home Assistant's native backups and daily Matter volume archives are stored on `home-assistant-backups` and synced daily to `/home-assistant/backups`. Matter archives cover both server formats, are retained locally for 14 days, and are file-level copies of the live Matter.js volume.
+- Paperless-ngx exports documents and metadata nightly to `paperless-ngx-sync`, which is synced to `/paperless` every five minutes. This does not back up its full database or PVCs.
+
+These Nextcloud jobs synchronize files, so deletions can propagate; Nextcloud versioning and trash retention are managed separately. Recovery means rebuilding the cluster from this Git repository and Flux, restoring application files from Nextcloud or retained local volumes, then using Home Assistant's native restore and Paperless-ngx's document importer. Restore Matter data to its matching server volume and format. The repository does not configure etcd or full-cluster backups, nor backups for the remaining persistent volumes.

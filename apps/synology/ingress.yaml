@@ -17,7 +17,7 @@ spec:
               service:
                 name: synology
                 port:
-                  number: 5000
+                  name: http
             path: /
             pathType: Prefix
   tls:

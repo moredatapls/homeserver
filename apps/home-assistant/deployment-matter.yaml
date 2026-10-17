@@ -16,19 +16,57 @@ spec:
         app: matter-server
     spec:
       hostNetwork: true
+      initContainers:
+        - name: copy-matter-data
+          image: busybox:1.37
+          command:
+            - sh
+            - -c
+            - |
+              if [ -z "$(ls -A /new-data)" ]; then
+                if [ ! -s /old-data/chip.json ] || ! find /old-data -maxdepth 1 -type f -name '*.json' ! -name 'chip.json' | grep -q .; then
+                  echo "Python Matter Server fabric files not found; refusing to start with empty storage" >&2
+                  exit 1
+                fi
+                cp -a /old-data/. /new-data/
+                chown -R 1000:1000 /new-data
+              fi
+          securityContext:
+            runAsUser: 0
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+          volumeMounts:
+            - name: old-data
+              mountPath: /old-data
+              readOnly: true
+            - name: data
+              mountPath: /new-data
       containers:
         - name: matter-server
-          image: ghcr.io/matter-js/python-matter-server:8.1.2
+          image: ghcr.io/matter-js/matterjs-server:1.4.0
           securityContext:
-            privileged: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 2Gi
           volumeMounts:
             - name: data
               mountPath: /data
       volumes:
+        - name: old-data
+          persistentVolumeClaim:
+            claimName: home-assistant-matter
         - name: data
           persistentVolumeClaim:
-            claimName:
-              home-assistant-matter
+            claimName: home-assistant-matterjs
       # prevent two matter-server pods from being scheduled at a time, only one instance should be running
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:

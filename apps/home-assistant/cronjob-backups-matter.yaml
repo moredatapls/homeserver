@@ -1,0 +1,69 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: home-assistant-matter-volume-backup
+  namespace: home-assistant
+spec:
+  schedule: "0 6 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: matter-volume-backup
+              image: busybox:1.37
+              command:
+                - sh
+                - -c
+                - |
+                  set -eu
+                  timestamp="$(date -u +%Y%m%dT%H%M%SZ)"
+                  snapshot_dir=/backups/matter-volume-snapshots
+                  mkdir -p "$snapshot_dir"
+                  find "$snapshot_dir" -type f -name '*.tmp' -delete
+                  if [ ! -s /matter-python/chip.json ] || ! find /matter-python -maxdepth 1 -type f -name '*.json' ! -name 'chip.json' | grep -q .; then
+                    echo "Python Matter Server fabric files not found" >&2
+                    exit 1
+                  fi
+                  if [ ! -d /matterjs/server ] || [ -z "$(ls -A /matterjs/server)" ]; then
+                    echo "Matter.js server storage not found" >&2
+                    exit 1
+                  fi
+                  python_tmp="$snapshot_dir/.python-matter-${timestamp}.tar.gz.tmp"
+                  matterjs_tmp="$snapshot_dir/.matterjs-${timestamp}.tar.gz.tmp"
+                  trap 'rm -f "$python_tmp" "$matterjs_tmp"' EXIT
+                  tar -czf "$python_tmp" -C /matter-python .
+                  tar -czf "$matterjs_tmp" -C /matterjs .
+                  tar -tzf "$python_tmp" >/dev/null
+                  tar -tzf "$matterjs_tmp" >/dev/null
+                  mv "$python_tmp" "$snapshot_dir/python-matter-${timestamp}.tar.gz"
+                  mv "$matterjs_tmp" "$snapshot_dir/matterjs-${timestamp}.tar.gz"
+                  find "$snapshot_dir" -type f -name '*.tar.gz' -mtime +14 -delete
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 500m
+                  memory: 256Mi
+              volumeMounts:
+                - name: matter-python
+                  mountPath: /matter-python
+                  readOnly: true
+                - name: matterjs
+                  mountPath: /matterjs
+                  readOnly: true
+                - name: backups
+                  mountPath: /backups
+          volumes:
+            - name: matter-python
+              persistentVolumeClaim:
+                claimName: home-assistant-matter
+            - name: matterjs
+              persistentVolumeClaim:
+                claimName: home-assistant-matterjs
+            - name: backups
+              persistentVolumeClaim:
+                claimName: home-assistant-backups
+          restartPolicy: OnFailure

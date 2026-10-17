@@ -53,6 +53,7 @@ spec:
     config:
       values:
         model:
+          default: deepseek-v4-flash-0731
           provider: auto
           # null drops the chart's OpenRouter default so OPENAI_BASE_URL from the secret applies
           base_url: null

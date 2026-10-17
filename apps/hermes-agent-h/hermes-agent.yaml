@@ -4,7 +4,7 @@ metadata:
   name: hermes-agent
   namespace: hermes-agent-h
 spec:
-  interval: 1h
+  interval: 5m
   url: https://github.com/moredatapls/hermes-agent
   ref:
     branch: main
@@ -15,7 +15,7 @@ metadata:
   name: hermes-agent
   namespace: hermes-agent-h
 spec:
-  interval: 1h
+  interval: 10m
   chart:
     spec:
       chart: .
@@ -23,7 +23,7 @@ spec:
         kind: GitRepository
         name: hermes-agent
         namespace: hermes-agent-h
-      interval: 1h
+      interval: 5m
   install:
     createNamespace: false
     strategy:

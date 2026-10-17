@@ -9,6 +9,7 @@ metadata:
 spec:
   # trigger nightly at 1am
   schedule: "0 1 * * *"
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:

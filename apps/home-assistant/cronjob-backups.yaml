@@ -6,6 +6,7 @@ metadata:
 spec:
   # the backups are created between 4:45 and 5:45, trigger with a bit of buffer
   schedule: "0 7 * * *"
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:

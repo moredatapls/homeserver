@@ -5,6 +5,7 @@ metadata:
   namespace: paperless-ngx
 spec:
   schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:

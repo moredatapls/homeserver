@@ -35,12 +35,18 @@ spec:
                       name: nextcloud-credentials
                       key: password
                 - name: OPTIONS
-                  value: "--non-interactive --path /paperless"
+                  value: "--non-interactive --path /paperless --exclude /etc/nextcloud/backup-excludes.txt"
               volumeMounts:
                 - name: sync
                   mountPath: /data
+                - name: sync-config
+                  mountPath: /etc/nextcloud
+                  readOnly: true
           volumes:
             - name: sync
               persistentVolumeClaim:
                 claimName: paperless-ngx-sync
+            - name: sync-config
+              configMap:
+                name: nextcloud-sync-config
           restartPolicy: OnFailure

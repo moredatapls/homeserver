@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: paperless-backup
+  namespace: paperless-ngx
+spec:
+  schedule: "0 1 * * *"
+  timeZone: "Europe/Berlin"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          serviceAccountName: export-trigger
+          containers:
+            - name: backup
+              image: alpine/kubectl:latest
+              command:
+                - /bin/sh
+                - -ec
+                - |
+                  kubectl exec -n paperless-ngx deploy/ui -c paperless-ngx -- /bin/sh -ec '
+                    sync=/usr/src/paperless/sync
+                    staging=$(mktemp -d "$sync/.paperless-backup-XXXXXX")
+                    trap '\''rm -rf "$staging"'\'' EXIT
+                    chown paperless:paperless "$staging"
+                    mkdir -p "$sync/backups"
+                    archive="paperless-$(date -u +%Y-%m-%dT%H-%M-%SZ)"
+                    document_exporter "$staging" --zip --zip-name "$archive" --use-folder-prefix --no-progress-bar
+                    chmod 0644 "$staging/$archive.zip"
+                    mv "$staging/$archive.zip" "$sync/backups/$archive.zip"
+                    find "$sync/backups" -maxdepth 1 -type f -name "paperless-*.zip" -mmin +20160 -delete
+                  '
+          restartPolicy: OnFailure

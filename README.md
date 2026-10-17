@@ -185,15 +185,28 @@ I integrated Thread using an external border router. I am using a [Tado Bridge X
 
 The Paperless-ngx setup is mostly based on the [Docker Compose](https://github.com/paperless-ngx/paperless-ngx/blob/dev/docker/compose/docker-compose.sqlite.yml) file and the [official Docker Compose setup guide](https://docs.paperless-ngx.com/setup/#docker) of the project.
 
-**TODOs**:
+### Backups and restore
 
-- Sync the data with Nextcloud
+- **Backups:** Full [document-exporter](https://docs.paperless-ngx.com/administration/#backup) ZIPs at 01:00 Europe/Berlin, including documents, thumbnails, settings, and database contents. Completed archives are kept for 14 days; cleanup runs only after a successful export.
+- **Browsable export:** A separate CronJob refreshes it at 02:00 Europe/Berlin using the configured filenames. Treat it as read-only; document changes and deletions propagate.
+- **Nextcloud:** `paperless-ngx-sync` is synced every five minutes to `/paperless`, with ZIPs in `backups/` and browsable files in `export/`. Incomplete backup staging is excluded.
+
+Allow space for 14 full backups plus temporary export files. Exports may contain plaintext mail credentials; restrict access and periodically test recovery.
+
+To restore, download a ZIP and use the exact Paperless version from its `metadata.json`. Prepare an isolated instance with empty database and media, ingestion and sync disabled, then run:
+
+```sh
+kubectl -n paperless-ngx cp ./paperless-backup.zip <restore-pod>:/tmp/paperless-backup.zip -c paperless-ngx
+kubectl -n paperless-ngx exec <restore-pod> -c paperless-ngx -- document_importer /tmp/paperless-backup.zip
+```
+
+Verify the restore before switching over. Regenerate API tokens; they are not exported. Recover Kubernetes manifests and secrets separately from Git and the password safe.
 
 ## Backups
 
 Nextcloud is the off-node copy for the configured application backups:
 
 - Home Assistant's native backups and daily Matter.js volume archives are stored on `home-assistant-backups` and synced daily to `/home-assistant/backups`. Matter archives are retained locally for 14 days and are file-level copies of the live Matter.js volume.
-- Paperless-ngx exports documents and metadata nightly to `paperless-ngx-sync`, which is synced to `/paperless` every five minutes. This does not back up its full database or PVCs.
+- Paperless-ngx: see [backups and restore](#backups-and-restore) above.
 
-These Nextcloud jobs synchronize files, so deletions can propagate; Nextcloud versioning and trash retention are managed separately. Recovery means rebuilding the cluster from this Git repository and Flux, restoring application files from Nextcloud or retained local volumes, then using Home Assistant's native restore and Paperless-ngx's document importer. Restore Matter data to its matching server volume and format. The repository does not configure etcd or full-cluster backups, nor backups for the remaining persistent volumes.
+Sync propagates deletions; Nextcloud versioning and trash retention are managed separately. Rebuild the cluster from Git and Flux, then restore application data. Restore Matter archives to the matching server volume and format. No etcd, full-cluster, or other PVC backups are configured.

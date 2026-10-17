@@ -48,3 +48,12 @@ data:
 
   # Enable polling interval in seconds for the consume directory
   PAPERLESS_CONSUMER_POLLING: "15" # seconds
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nextcloud-sync-config
+  namespace: paperless-ngx
+data:
+  backup-excludes.txt: |
+    .paperless-backup-*

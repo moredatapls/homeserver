@@ -7,16 +7,28 @@ metadata:
   name: paperless-export-trigger
   namespace: paperless-ngx
 spec:
-  # trigger nightly at 1am
-  schedule: "0 1 * * *"
+  # trigger nightly at 2am
+  schedule: "0 2 * * *"
+  timeZone: "Europe/Berlin"
   concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
+      backoffLimit: 2
       template:
         spec:
           serviceAccountName: export-trigger
           containers:
             - name: export-trigger
               image: alpine/kubectl:latest
-              command: ["/bin/sh", "-c", "kubectl exec -n paperless-ngx deploy/ui -- document_exporter ../sync/export --use-filename-format --delete --use-folder-prefix --compare-checksums"] 
+              command:
+                - /bin/sh
+                - -ec
+                - |
+                  kubectl exec -n paperless-ngx deploy/ui -c paperless-ngx -- /bin/sh -ec '
+                    sync=/usr/src/paperless/sync
+                    mkdir -p "$sync/export"
+                    document_exporter "$sync/export" --use-filename-format --delete --use-folder-prefix --compare-checksums --no-progress-bar
+                  '
           restartPolicy: OnFailure

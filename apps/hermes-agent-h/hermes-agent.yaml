@@ -52,6 +52,10 @@ spec:
 
     config:
       values:
+        model:
+          provider: custom
+          # null drops the chart's OpenRouter default so OPENAI_BASE_URL from the secret applies
+          base_url: null
         dashboard:
           # ingress-nginx runs with hostNetwork, so requests arrive from the node IP
           trusted_proxies:

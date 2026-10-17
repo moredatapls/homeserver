@@ -52,6 +52,10 @@ spec:
 
     config:
       values:
+        telemetry:
+          shared_metrics:
+            enabled: false
+            send: false
         providers:
           scaleway:
             # resolved by Hermes from the env, keeps the URL in hermes-h-secrets
@@ -131,6 +135,14 @@ spec:
         value: "1000"
       - name: HERMES_GID
         value: "1000"
+      - name: DO_NOT_TRACK
+        value: "1"
+      - name: ANONYMIZED_TELEMETRY
+        value: "false"
+      - name: HF_HUB_DISABLE_TELEMETRY
+        value: "1"
+      - name: LANGFUSE_TRACING_ENABLED
+        value: "false"
 
     secrets:
       existingSecret: hermes-h-secrets

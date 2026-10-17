@@ -87,7 +87,7 @@ spec:
       readOnlyRootFilesystem: false
       capabilities:
         drop: ["ALL"]
-        add: ["CHOWN", "SETUID", "SETGID"]
+        add: ["CHOWN", "DAC_OVERRIDE", "SETUID", "SETGID"]
       seccompProfile:
         type: RuntimeDefault
 

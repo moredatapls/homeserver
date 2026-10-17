@@ -95,6 +95,8 @@ spec:
 
     serviceAccount:
       create: true
+      name: hermes-h
+      automountServiceAccountToken: true
 
     rbac:
       # use custom rbac because the chart can only manage rbac in its own namespace

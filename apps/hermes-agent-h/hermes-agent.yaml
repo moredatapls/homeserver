@@ -72,6 +72,25 @@ spec:
       enabled: true
       existingClaim: hermes-h-data
 
+    extraInitContainersBeforeBootstrap:
+      - name: init-data-permissions
+        image: busybox:1.37.0
+        command: ["sh", "-ec", "chown 1000:1000 /data"]
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          runAsNonRoot: false
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: ["ALL"]
+            add: ["CHOWN"]
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+          - name: data
+            mountPath: /data
+
     secrets:
       existingSecret: hermes-h-secrets
 

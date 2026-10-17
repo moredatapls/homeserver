@@ -75,7 +75,7 @@ spec:
     extraInitContainersBeforeBootstrap:
       - name: init-data-permissions
         image: busybox:1.37.0
-        command: ["sh", "-ec", "chown 1000:1000 /data /run-s6 && chmod 0755 /run-s6"]
+        command: ["sh", "-ec", "chmod 0755 /run-s6 && chown 1000:1000 /data /run-s6"]
         securityContext:
           runAsUser: 0
           runAsGroup: 0

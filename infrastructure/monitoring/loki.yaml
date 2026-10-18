@@ -80,6 +80,35 @@ spec:
         fsGroup: 10001
         seccompProfile:
           type: RuntimeDefault
+      initContainers:
+        - name: volume-permissions
+          image: busybox:1.37
+          command:
+            - sh
+            - -ec
+            - |
+              chown -Rh 10001:10001 /var/lib/loki
+              chmod -R u+rwX /var/lib/loki
+              chmod 0770 /var/lib/loki
+          securityContext:
+            runAsNonRoot: false
+            runAsUser: 0
+            runAsGroup: 0
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+              add: [CHOWN, DAC_OVERRIDE, FOWNER]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 32Mi
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/loki
       containers:
         - name: loki
           image: grafana/loki:3.6.14

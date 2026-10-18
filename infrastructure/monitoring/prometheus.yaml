@@ -179,12 +179,13 @@ spec:
         resources:
           requests:
             cpu: 5m
-            memory: 32Mi
+            memory: 96Mi
           limits:
             cpu: 100m
-            memory: 96Mi
+            memory: 256Mi
         dashboards:
           searchNamespace: monitoring
+          resource: configmap
       grafana.ini:
         server:
           root_url: https://grafana.berlin.bruegner.com

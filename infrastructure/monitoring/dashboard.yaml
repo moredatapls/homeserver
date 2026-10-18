@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-host-events-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  host-events.json: |
+    {
+      "uid": "berlin-host-events",
+      "title": "Berlin / RAID and Kubernetes Events",
+      "schemaVersion": 39,
+      "version": 1,
+      "editable": true,
+      "tags": ["berlin", "mdadm", "kubernetes"],
+      "timezone": "browser",
+      "refresh": "1m",
+      "time": {"from": "now-6h", "to": "now"},
+      "panels": [
+        {
+          "id": 1,
+          "title": "RAID Active / Required Disks",
+          "type": "stat",
+          "gridPos": {"x": 0, "y": 0, "w": 12, "h": 6},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [
+            {"refId": "A", "expr": "node_md_disks{state=\"active\"} / on(instance, device, job, namespace, pod, service, endpoint) node_md_disks_required", "legendFormat": "{{instance}} / {{device}}", "instant": true}
+          ],
+          "fieldConfig": {"defaults": {"unit": "percentunit", "min": 0, "max": 1, "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]}}, "overrides": []},
+          "options": {"colorMode": "value", "reduceOptions": {"calcs": ["lastNotNull"], "values": false}}
+        },
+        {
+          "id": 2,
+          "title": "RAID Failed Disks",
+          "type": "timeseries",
+          "gridPos": {"x": 12, "y": 0, "w": 12, "h": 6},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [
+            {"refId": "A", "expr": "node_md_disks{state=\"failed\"}", "legendFormat": "{{instance}} / {{device}}"}
+          ],
+          "fieldConfig": {"defaults": {"min": 0, "decimals": 0}, "overrides": []},
+          "options": {"legend": {"displayMode": "list", "placement": "bottom"}}
+        },
+        {
+          "id": 3,
+          "title": "Kubernetes Events",
+          "type": "logs",
+          "gridPos": {"x": 0, "y": 6, "w": 24, "h": 16},
+          "datasource": {"type": "loki", "uid": "loki"},
+          "targets": [
+            {"refId": "A", "expr": "{cluster=\"berlin\", job=\"kubernetes-events\"} | json", "queryType": "range"}
+          ],
+          "options": {"showTime": true, "showLabels": false, "wrapLogMessage": true, "sortOrder": "Descending", "dedupStrategy": "none", "enableLogDetails": true}
+        }
+      ]
+    }

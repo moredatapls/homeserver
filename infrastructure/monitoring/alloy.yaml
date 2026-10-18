@@ -1,0 +1,151 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  interval: 24h
+  url: https://grafana.github.io/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: alloy
+  namespace: monitoring
+spec:
+  interval: 12h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  chart:
+    spec:
+      chart: alloy
+      version: "1.13.1"
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+      interval: 12h
+  values:
+    fullnameOverride: alloy
+    crds:
+      create: false
+    controller:
+      type: deployment
+      replicas: 1
+      updateStrategy:
+        type: Recreate
+      volumes:
+        extra:
+          - name: data
+            persistentVolumeClaim:
+              claimName: monitoring-alloy
+    rbac:
+      rules:
+        - apiGroups: [""]
+          resources: ["events"]
+          verbs: ["get", "list", "watch"]
+      clusterRules: []
+    configReloader:
+      resources:
+        requests:
+          cpu: 5m
+          memory: 16Mi
+        limits:
+          cpu: 100m
+          memory: 64Mi
+    alloy:
+      enableReporting: false
+      storagePath: /var/lib/alloy
+      mounts:
+        extra:
+          - name: data
+            mountPath: /var/lib/alloy
+      extraEnv:
+        - name: GOMEMLIMIT
+          value: 180MiB
+        - name: GOMAXPROCS
+          value: "1"
+      resources:
+        requests:
+          cpu: 25m
+          memory: 96Mi
+        limits:
+          cpu: 300m
+          memory: 256Mi
+      extraPorts:
+        - name: otlp-grpc
+          port: 4317
+          targetPort: 4317
+          protocol: TCP
+        - name: otlp-http
+          port: 4318
+          targetPort: 4318
+          protocol: TCP
+      configMap:
+        content: |
+          otelcol.receiver.otlp "apps" {
+            grpc {
+              endpoint = "0.0.0.0:4317"
+            }
+            http {
+              endpoint = "0.0.0.0:4318"
+            }
+            output {
+              metrics = [otelcol.processor.memory_limiter.apps.input]
+            }
+          }
+
+          otelcol.processor.memory_limiter "apps" {
+            check_interval = "1s"
+            limit = "160MiB"
+            spike_limit = "32MiB"
+            output {
+              metrics = [otelcol.processor.batch.apps.input]
+            }
+          }
+
+          otelcol.processor.batch "apps" {
+            timeout = "10s"
+            send_batch_size = 1024
+            send_batch_max_size = 2048
+            output {
+              metrics = [otelcol.exporter.prometheus.apps.input]
+            }
+          }
+
+          otelcol.exporter.prometheus "apps" {
+            forward_to = [prometheus.remote_write.local.receiver]
+          }
+
+          prometheus.remote_write "local" {
+            endpoint {
+              url = "http://monitoring-prometheus.monitoring.svc.cluster.local:9090/api/v1/write"
+              queue_config {
+                capacity = 2500
+                min_shards = 1
+                max_shards = 2
+                max_samples_per_send = 500
+              }
+            }
+            wal {
+              max_keepalive_time = "1h"
+            }
+          }
+
+          loki.source.kubernetes_events "cluster" {
+            job_name = "kubernetes-events"
+            log_format = "json"
+            forward_to = [loki.write.local.receiver]
+          }
+
+          loki.write "local" {
+            endpoint {
+              url = "http://loki.monitoring.svc.cluster.local:3100/loki/api/v1/push"
+            }
+            external_labels = {
+              cluster = "berlin",
+            }
+          }

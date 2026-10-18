@@ -1,0 +1,174 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: prometheus-community
+  namespace: monitoring
+spec:
+  interval: 24h
+  url: https://prometheus-community.github.io/helm-charts
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: monitoring
+  namespace: monitoring
+spec:
+  interval: 12h
+  timeout: 10m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: "92.10.1"
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+      interval: 12h
+  values:
+    fullnameOverride: monitoring
+    alertmanager:
+      enabled: false
+    kubeEtcd:
+      enabled: false
+    kubeControllerManager:
+      enabled: false
+    kubeScheduler:
+      enabled: false
+    kubeProxy:
+      enabled: false
+    defaultRules:
+      rules:
+        etcd: false
+        kubeControllerManager: false
+        kubeSchedulerAlerting: false
+        kubeSchedulerRecording: false
+        kubeProxy: false
+        alertmanager: false
+    prometheus:
+      prometheusSpec:
+        replicas: 1
+        enableRemoteWriteReceiver: true
+        scrapeInterval: 60s
+        evaluationInterval: 60s
+        retention: 7d
+        retentionSize: 18GB
+        externalLabels:
+          cluster: berlin
+        resources:
+          requests:
+            cpu: 100m
+            memory: 384Mi
+          limits:
+            cpu: "1"
+            memory: 1Gi
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: local-storage
+              selector:
+                matchLabels:
+                  monitoring-volume: prometheus
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 25Gi
+        additionalScrapeConfigs:
+          - job_name: alloy
+            static_configs:
+              - targets:
+                  - alloy.monitoring.svc.cluster.local:12345
+    prometheusOperator:
+      resources:
+        requests:
+          cpu: 20m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 192Mi
+      prometheusConfigReloader:
+        resources:
+          requests:
+            cpu: 5m
+            memory: 16Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi
+    kube-state-metrics:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          cpu: 100m
+          memory: 128Mi
+    prometheus-node-exporter:
+      extraArgs:
+        - --collector.mdadm
+      resources:
+        requests:
+          cpu: 10m
+          memory: 24Mi
+        limits:
+          cpu: 100m
+          memory: 64Mi
+    grafana:
+      defaultDashboardsEnabled: true
+      defaultDashboardsInterval: 1m
+      adminPassword: null
+      persistence:
+        enabled: true
+        existingClaim: monitoring-grafana
+      deploymentStrategy:
+        type: Recreate
+      resources:
+        requests:
+          cpu: 25m
+          memory: 128Mi
+        limits:
+          cpu: 300m
+          memory: 384Mi
+      sidecar:
+        resources:
+          requests:
+            cpu: 5m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 96Mi
+        dashboards:
+          searchNamespace: monitoring
+      grafana.ini:
+        server:
+          root_url: https://grafana.berlin.bruegner.com
+        users:
+          allow_sign_up: false
+        auth.anonymous:
+          enabled: false
+        analytics:
+          reporting_enabled: false
+          check_for_updates: false
+      ingress:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt
+        hosts:
+          - grafana.berlin.bruegner.com
+        tls:
+          - secretName: grafana-tls
+            hosts:
+              - grafana.berlin.bruegner.com
+      additionalDataSources:
+        - name: Loki
+          uid: loki
+          type: loki
+          access: proxy
+          url: http://loki.monitoring.svc.cluster.local:3100

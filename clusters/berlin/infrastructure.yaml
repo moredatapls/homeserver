@@ -1,6 +1,25 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: infra-monitoring
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infra-storageclasses
+    - name: infra-configs
+  interval: 1m
+  retryInterval: 2m
+  timeout: 10m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/monitoring
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: infra-controllers-ingress-nginx
   namespace: flux-system
 spec:

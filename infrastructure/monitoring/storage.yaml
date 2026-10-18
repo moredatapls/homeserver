@@ -1,0 +1,144 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: monitoring-prometheus
+  labels:
+    monitoring-volume: prometheus
+spec:
+  capacity:
+    storage: 25Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/data/monitoring/prometheus
+    type: DirectoryOrCreate
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - alderaan
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: monitoring-grafana
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/data/monitoring/grafana
+    type: DirectoryOrCreate
+  claimRef:
+    name: monitoring-grafana
+    namespace: monitoring
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - alderaan
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: monitoring-grafana
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: monitoring-grafana
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: monitoring-loki
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/data/monitoring/loki
+    type: DirectoryOrCreate
+  claimRef:
+    name: monitoring-loki
+    namespace: monitoring
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - alderaan
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: monitoring-loki
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: monitoring-loki
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: monitoring-alloy
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /mnt/data/monitoring/alloy
+    type: DirectoryOrCreate
+  claimRef:
+    name: monitoring-alloy
+    namespace: monitoring
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - alderaan
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: monitoring-alloy
+  namespace: monitoring
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  volumeName: monitoring-alloy
+  resources:
+    requests:
+      storage: 1Gi

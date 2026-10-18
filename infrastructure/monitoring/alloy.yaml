@@ -46,8 +46,11 @@ spec:
       rules:
         - apiGroups: [""]
           resources: ["events"]
-          verbs: ["get", "list", "watch"]
-      clusterRules: []
+          verbs: ["list", "watch"]
+      clusterRules:
+        - apiGroups: [""]
+          resources: ["events"]
+          verbs: ["get"]
     configReloader:
       resources:
         requests:

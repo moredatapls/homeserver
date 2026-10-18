@@ -8,6 +8,7 @@ spec:
   interval: 24h
   url: https://prometheus-community.github.io/helm-charts
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/all.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -61,6 +62,43 @@ spec:
         retentionSize: 18GB
         externalLabels:
           cluster: berlin
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 2000
+          fsGroup: 2000
+          seccompProfile:
+            type: RuntimeDefault
+        initContainers:
+          - name: volume-permissions
+            image: busybox:1.37
+            command:
+              - sh
+              - -ec
+              - |
+                chown -Rh 1000:2000 /prometheus
+                chmod -R u+rwX /prometheus
+                chmod 0770 /prometheus
+            securityContext:
+              runAsNonRoot: false
+              runAsUser: 0
+              runAsGroup: 0
+              readOnlyRootFilesystem: true
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: [ALL]
+                add: [CHOWN, DAC_OVERRIDE, FOWNER]
+            resources:
+              requests:
+                cpu: 10m
+                memory: 16Mi
+              limits:
+                cpu: 100m
+                memory: 32Mi
+            volumeMounts:
+              - name: 'prometheus-{{ include "kube-prometheus-stack.prometheus.crname" . }}-db'
+                mountPath: /prometheus
+                subPath: prometheus-db
         resources:
           requests:
             cpu: 100m
@@ -128,13 +166,15 @@ spec:
         existingClaim: monitoring-grafana
       deploymentStrategy:
         type: Recreate
+      env:
+        GOMEMLIMIT: 512MiB
       resources:
         requests:
           cpu: 25m
-          memory: 128Mi
+          memory: 256Mi
         limits:
           cpu: 300m
-          memory: 384Mi
+          memory: 768Mi
       sidecar:
         resources:
           requests:

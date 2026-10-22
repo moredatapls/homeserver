@@ -26,13 +26,14 @@ spec:
                     staging=$(mktemp -d /backups/.teleporter-XXXXXX)
                     trap '\''rm -rf "$staging"'\'' EXIT
                     cd "$staging"
-                    archive=$(pihole-FTL --teleporter)
+                    output=$(pihole-FTL --teleporter)
+                    archive=$(printf "%s\n" "$output" | tail -n 1)
                     test -n "$archive"
                     test "$archive" = "$(basename "$archive")"
                     test -s "$archive"
                     chmod 0644 "$archive"
                     mv "$archive" /backups/
-                    find /backups -maxdepth 1 -type f -name "*.gz" -mmin +20160 -delete
+                    find /backups -maxdepth 1 -type f -name "pi-hole_*_teleporter_*.zip" -mmin +20160 -delete
                   '
           containers:
             - name: nextcloud-sync

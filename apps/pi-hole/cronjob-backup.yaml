@@ -1,0 +1,65 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pi-hole-backup
+  namespace: pi-hole
+spec:
+  schedule: "0 3 * * *"
+  timeZone: "Europe/Berlin"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          serviceAccountName: backup
+          initContainers:
+            - name: backup
+              image: alpine/kubectl:latest
+              command:
+                - /bin/sh
+                - -ec
+                - |
+                  kubectl exec -n pi-hole server-0 -c server -- /bin/sh -ec '
+                    staging=$(mktemp -d /backups/.teleporter-XXXXXX)
+                    trap '\''rm -rf "$staging"'\'' EXIT
+                    cd "$staging"
+                    archive=$(pihole-FTL --teleporter)
+                    test -n "$archive"
+                    test "$archive" = "$(basename "$archive")"
+                    test -s "$archive"
+                    chmod 0644 "$archive"
+                    mv "$archive" /backups/
+                    find /backups -maxdepth 1 -type f -name "*.gz" -mmin +20160 -delete
+                  '
+          containers:
+            - name: nextcloud-sync
+              image: mbentley/nextcloud-client:latest
+              env:
+                - name: NEXTCLOUD_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-credentials
+                      key: url
+                - name: USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-credentials
+                      key: username
+                - name: PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: nextcloud-credentials
+                      key: password
+                - name: OPTIONS
+                  value: "--non-interactive --path /pi-hole/backups"
+              volumeMounts:
+                - name: backups
+                  mountPath: /data
+          volumes:
+            - name: backups
+              persistentVolumeClaim:
+                claimName: pi-hole-backups
+          restartPolicy: OnFailure

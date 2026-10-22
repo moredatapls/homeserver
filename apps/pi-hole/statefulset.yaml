@@ -60,7 +60,12 @@ spec:
               name: dnsmasq
             - mountPath: /dev/shm
               name: shm
+            - mountPath: /backups
+              name: backups
       volumes:
+        - name: backups
+          persistentVolumeClaim:
+            claimName: pi-hole-backups
         - name: pi-hole-etc
           persistentVolumeClaim:
             claimName: pi-hole-etc

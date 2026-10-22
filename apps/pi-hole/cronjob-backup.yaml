@@ -14,7 +14,7 @@ spec:
       backoffLimit: 2
       template:
         spec:
-          serviceAccountName: backup
+          serviceAccountName: export-trigger
           initContainers:
             - name: backup
               image: alpine/kubectl:latest
@@ -22,7 +22,7 @@ spec:
                 - /bin/sh
                 - -ec
                 - |
-                  kubectl exec -n pi-hole server-0 -c server -- /bin/sh -ec '
+                  kubectl exec -n pi-hole statefulset/server -c server -- /bin/sh -ec '
                     staging=$(mktemp -d /backups/.teleporter-XXXXXX)
                     trap '\''rm -rf "$staging"'\'' EXIT
                     cd "$staging"
@@ -54,12 +54,27 @@ spec:
                       name: nextcloud-credentials
                       key: password
                 - name: OPTIONS
-                  value: "--non-interactive --path /pi-hole/backups"
+                  value: "--non-interactive --path /pi-hole/backups --exclude /etc/nextcloud/backup-excludes.txt"
               volumeMounts:
                 - name: backups
                   mountPath: /data
+                - name: sync-config
+                  mountPath: /etc/nextcloud
+                  readOnly: true
           volumes:
             - name: backups
               persistentVolumeClaim:
                 claimName: pi-hole-backups
+            - name: sync-config
+              configMap:
+                name: nextcloud-sync-config
           restartPolicy: OnFailure
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nextcloud-sync-config
+  namespace: pi-hole
+data:
+  backup-excludes.txt: |
+    .teleporter-*

@@ -29,11 +29,9 @@ data:
   # Redis connection string
   PAPERLESS_REDIS: "redis://redis.paperless-ngx.svc.cluster.local:6379"
 
-  # Native AI stays disabled until the model credentials and settings are configured.
+  # Enable AI features for document processing
+  PAPERLESS_AI_ENABLED: "true"
   PAPERLESS_AI_LLM_BACKEND: "openai-like"
-
-  # Configure the model
-  PAPERLESS_AI_LLM_MODEL: "deepseek-v4-flash-0731"
 
   # Configure the consumer directory
   PAPERLESS_CONSUMPTION_DIR: "../sync/consume"

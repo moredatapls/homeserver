@@ -37,14 +37,20 @@ spec:
             - name: PAPERLESS_AI_LLM_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: ai-credentials
+                  name: ai-credentials-local
                   key: api-key
                   optional: true
             - name: PAPERLESS_AI_LLM_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: ai-credentials
+                  name: ai-credentials-local
                   key: endpoint
+                  optional: true
+            - name: PAPERLESS_AI_LLM_MODEL
+              valueFrom:
+                secretKeyRef:
+                  name: ai-credentials-local
+                  key: model
                   optional: true
           volumeMounts:
             - name: data

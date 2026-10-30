@@ -57,6 +57,8 @@ spec:
                 secretKeyRef:
                   name: paperless
                   key: secret-key
+            - name: RUST_BACKTRACE
+              value: "1"
           volumeMounts:
             - name: data
               mountPath: /usr/src/paperless/data

@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui
+  namespace: paperless-ngx-restore-test
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: paperless-ngx-restore-test-ui
+  template:
+    metadata:
+      labels:
+        app: paperless-ngx-restore-test-ui
+    spec:
+      initContainers:
+        - name: configure-permissions
+          image: busybox:1.37
+          command:
+            - sh
+            - -ec
+            - |
+              for path in /data /media /sync; do
+                chown -Rh 1000:1000 "$path"
+                chmod -R u+rwX "$path"
+                chmod 0770 "$path"
+              done
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            runAsNonRoot: false
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - CHOWN
+                - DAC_OVERRIDE
+                - FOWNER
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 32Mi
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: media
+              mountPath: /media
+            - name: sync
+              mountPath: /sync
+      containers:
+        - name: paperless-ngx
+          image: ghcr.io/paperless-ngx/paperless-ngx:2.20.15
+          ports:
+            - containerPort: 8000
+              name: http
+          envFrom:
+            - configMapRef:
+                name: ui-config
+          volumeMounts:
+            - name: data
+              mountPath: /usr/src/paperless/data
+            - name: media
+              mountPath: /usr/src/paperless/media
+            - name: sync
+              mountPath: /usr/src/paperless/sync
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: paperless-restore-test-data
+        - name: media
+          persistentVolumeClaim:
+            claimName: paperless-restore-test-media
+        - name: sync
+          persistentVolumeClaim:
+            claimName: paperless-restore-test-sync

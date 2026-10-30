@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: paperless-ngx-restore-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: paperless-ngx-restore-test-redis
+  template:
+    metadata:
+      labels:
+        app: paperless-ngx-restore-test-redis
+    spec:
+      containers:
+        - name: redis
+          image: docker.io/library/redis:8
+          ports:
+            - containerPort: 6379
+              name: redis
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          emptyDir: {}

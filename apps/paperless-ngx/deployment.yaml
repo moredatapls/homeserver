@@ -33,6 +33,19 @@ spec:
           envFrom:
             - configMapRef:
                 name: ui-config
+          env:
+            - name: PAPERLESS_AI_LLM_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ai-credentials
+                  key: api-key
+                  optional: true
+            - name: PAPERLESS_AI_LLM_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: ai-credentials
+                  key: endpoint
+                  optional: true
           volumeMounts:
             - name: data
               mountPath: /usr/src/paperless/data

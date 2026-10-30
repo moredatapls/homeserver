@@ -26,7 +26,7 @@ data:
   PAPERLESS_REDIS: "redis://redis.paperless-ngx.svc.cluster.local:6379"
 
   # Enable AI features for document processing
-  PAPERLESS_AI_ENABLED: "false" # TODO enable after upgrade
+  PAPERLESS_AI_ENABLED: "true"
   PAPERLESS_AI_LLM_BACKEND: "openai-like"
 
   # Preserve v2 behavior of always creating archive files.

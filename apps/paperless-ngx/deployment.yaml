@@ -52,6 +52,11 @@ spec:
                   name: ai-credentials-local
                   key: model
                   optional: true
+            - name: PAPERLESS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: paperless
+                  key: secret-key
           volumeMounts:
             - name: data
               mountPath: /usr/src/paperless/data

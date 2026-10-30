@@ -13,10 +13,6 @@ data:
   # Uncomment and adjust as needed
   PAPERLESS_URL: "https://paperless.berlin.bruegner.com"
 
-  # Adjust this key if you plan to make paperless available publicly.
-  # It should be a very long sequence of random characters.
-  # PAPERLESS_SECRET_KEY: "change-me"
-
   # Use this variable to set a timezone for the Paperless Docker containers. Defaults to UTC.
   PAPERLESS_TIME_ZONE: "Europe/Berlin"
 

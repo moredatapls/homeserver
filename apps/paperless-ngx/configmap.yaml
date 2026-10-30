@@ -17,10 +17,10 @@ data:
   PAPERLESS_TIME_ZONE: "Europe/Berlin"
 
   # The default language to use for OCR. Set this to the language most of your documents are written in.
-  # PAPERLESS_OCR_LANGUAGE: "eng"
+  PAPERLESS_OCR_LANGUAGE: "deu"
 
   # Additional languages to install for text recognition, separated by a whitespace.
-  # PAPERLESS_OCR_LANGUAGES: "tur ces"
+  PAPERLESS_OCR_LANGUAGES: "eng ron"
 
   # Redis connection string
   PAPERLESS_REDIS: "redis://redis.paperless-ngx.svc.cluster.local:6379"

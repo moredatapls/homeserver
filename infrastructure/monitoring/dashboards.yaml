@@ -6,6 +6,7 @@ metadata:
   labels:
     grafana_dashboard: "1"
 data:
+  # RAID host events
   host-events.json: |
     {
       "uid": "host-events",
@@ -44,6 +45,7 @@ data:
         }
       ]
     }
+  # kube events
   kube-events.json: |
     {
       "uid": "kube-events",
@@ -77,6 +79,45 @@ data:
             {"refId": "A", "expr": "kube_event_count{cluster=\"berlin\", job=\"kubernetes-events\", type=\"error\"}", "legendFormat": "{{instance}}"}
           ],
           "fieldConfig": {"defaults": {"min": 0, "decimals": 0}, "overrides": []},
+          "options": {"legend": {"displayMode": "list", "placement": "bottom"}}
+        }
+      ]
+    }
+  # stacked chart of cpu and memory consumption by namespace
+  cpu-memory-namespace.json: |
+    {
+      "uid": "cpu-memory-namespace",
+      "title": "Kubernetes / Compute Resources / By Namespace",
+      "schemaVersion": 39,
+      "version": 1,
+      "editable": true,
+      "tags": ["kubernetes", "namespace", "cpu", "memory"],
+      "timezone": "browser",
+      "refresh": "1m",
+      "time": {"from": "now-6h", "to": "now"},
+      "panels": [
+        {
+          "id": 1,
+          "title": "CPU Usage by Namespace",
+          "type": "timeseries",
+          "gridPos": {"x": 0, "y": 0, "w": 24, "h": 8},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [
+            {"refId": "A", "expr": "sum(rate(container_cpu_usage_seconds_total{job=\"kubelet\", image!=\"\"}[5m])) by (namespace)", "legendFormat": "{{namespace}}"}
+          ],
+          "fieldConfig": {"defaults": {"min": 0, "decimals": 2}, "overrides": []},
+          "options": {"legend": {"displayMode": "list", "placement": "bottom"}}
+        },
+        {
+          "id": 2,
+          "title": "Memory Usage by Namespace",
+          "type": "timeseries",
+          "gridPos": {"x": 0, "y": 8, "w": 24, "h": 8},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [
+            {"refId": "A", "expr": "sum(container_memory_usage_bytes{job=\"kubelet\", image!=\"\"}) by (namespace)", "legendFormat": "{{namespace}}"}
+          ],
+          "fieldConfig": {"defaults": {"min": 0, "decimals": 2}, "overrides": []},
           "options": {"legend": {"displayMode": "list", "placement": "bottom"}}
         }
       ]

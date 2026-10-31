@@ -27,6 +27,16 @@ spec:
       containers:
         - name: paperless-ngx
           image: ghcr.io/paperless-ngx/paperless-ngx:3.4.0
+          command: ["/bin/sh", "-ec"]
+          args:
+            - |
+              uv pip install --system --python /usr/local/bin/python \
+                --index-url https://pypi.org/simple \
+                --no-deps --only-binary=:all: 'numpy==2.3.5'
+              uv pip check --python /usr/local/bin/python
+              /usr/local/bin/python -X faulthandler -c \
+                'import numpy; print("NumPy startup check:", numpy.__version__); print(numpy.arange(3) + 1)'
+              exec /init
           ports:
             - containerPort: 8000
               name: http
@@ -37,19 +47,19 @@ spec:
             - name: PAPERLESS_AI_LLM_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: ai-credentials
+                  name: ai-credentials-local
                   key: api-key
                   optional: true
             - name: PAPERLESS_AI_LLM_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: ai-credentials
+                  name: ai-credentials-local
                   key: endpoint
                   optional: true
             - name: PAPERLESS_AI_LLM_MODEL
               valueFrom:
                 secretKeyRef:
-                  name: ai-credentials
+                  name: ai-credentials-local
                   key: model
                   optional: true
             - name: PAPERLESS_SECRET_KEY

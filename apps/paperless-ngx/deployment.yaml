@@ -59,6 +59,8 @@ spec:
                   key: secret-key
             - name: RUST_BACKTRACE
               value: "1"
+            - name: PYTHONFAULTHANDLER
+              value: "1"
           volumeMounts:
             - name: data
               mountPath: /usr/src/paperless/data

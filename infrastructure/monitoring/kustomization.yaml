@@ -6,4 +6,4 @@ resources:
   - prometheus.yaml
   - alloy.yaml
   - loki.yaml
-  - dashboard.yaml
+  - dashboards.yaml

@@ -16,6 +16,9 @@ data:
   # Use this variable to set a timezone for the Paperless Docker containers. Defaults to UTC.
   PAPERLESS_TIME_ZONE: "Europe/Berlin"
 
+  # Parse dates from filenames using day-month-year order.
+  PAPERLESS_FILENAME_DATE_ORDER: "YMD"
+
   # The default language to use for OCR. Set this to the language most of your documents are written in.
   PAPERLESS_OCR_LANGUAGE: "deu"
 

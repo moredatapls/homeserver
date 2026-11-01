@@ -47,19 +47,19 @@ spec:
             - name: PAPERLESS_AI_LLM_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: ai-credentials-local
+                  name: ai-credentials-mac-apfel
                   key: api-key
                   optional: true
             - name: PAPERLESS_AI_LLM_ENDPOINT
               valueFrom:
                 secretKeyRef:
-                  name: ai-credentials-local
+                  name: ai-credentials-mac-apfel
                   key: endpoint
                   optional: true
             - name: PAPERLESS_AI_LLM_MODEL
               valueFrom:
                 secretKeyRef:
-                  name: ai-credentials-local
+                  name: ai-credentials-mac-apfel
                   key: model
                   optional: true
             - name: PAPERLESS_SECRET_KEY
